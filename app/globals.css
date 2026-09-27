@@ -1,26 +1,90 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   Projeto Caramelo — brand theme (Tailwind v4 CSS-first config)
+   Warm, emotional NGO identity inspired by the brand's Instagram
+   "thank-you note" aesthetic: navy + caramel on cream.
+   ============================================================ */
+
+@theme {
+  /* --- Color palette --- */
+  --color-navy: #1b2a4a;
+  --color-navy-700: #24365c;
+  --color-navy-900: #131f38;
+
+  --color-caramel: #e8862e;
+  --color-caramel-600: #d4761f;
+  --color-caramel-300: #f4b878;
+
+  --color-cream: #f6e7c9;
+  --color-cream-soft: #fbf3e2;
+  --color-cream-deep: #efd9ac;
+
+  --color-offwhite: #fffdf8;
+  --color-heart: #e8624a;
+  --color-leaf: #5b8f6f;
+
+  /* --- Type roles (wired to next/font variables in layout.tsx) --- */
+  --font-display: var(--font-fredoka); /* chunky rounded headlines */
+  --font-script: var(--font-caveat); /* handwritten emotional accents */
+  --font-body: var(--font-nunito); /* clean, friendly body text */
+
+  /* --- Motion --- */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Smooth in-page anchor navigation from the navbar. */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-navy);
+  font-family: var(--font-body), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Respect users who prefer reduced motion — kill transforms/animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------
+   Decorative motifs — low-opacity hand-drawn hearts & paw prints
+   used as ambient section textures. Pure CSS (inline SVG data URIs),
+   so they add zero network requests.
+   ------------------------------------------------------------ */
+.paw-texture {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='%231b2a4a' fill-opacity='0.05'%3E%3Cellipse cx='30' cy='40' rx='7' ry='9'/%3E%3Cellipse cx='45' cy='34' rx='5' ry='7'/%3E%3Cellipse cx='60' cy='34' rx='5' ry='7'/%3E%3Cellipse cx='75' cy='40' rx='7' ry='9'/%3E%3Cpath d='M52 48c-8 0-14 6-14 12s6 8 14 8 14-2 14-8-6-12-14-12z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+.heart-texture {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'%3E%3Cpath d='M45 68S22 52 22 37c0-8 6-14 13-14 5 0 9 3 10 7 1-4 5-7 10-7 7 0 13 6 13 14 0 15-23 31-23 31z' fill='%23e8862e' fill-opacity='0.06'/%3E%3C/svg%3E");
+  background-size: 130px 130px;
+}
+
+/* Dashed rounded highlight box — the "thank-you receipt" look from the
+   reference Instagram post, used for the Pix donation + stat callouts. */
+.dashed-card {
+  border: 2px dashed var(--color-caramel);
+  border-radius: 1.5rem;
+}
+
+/* Utility: hide scrollbar on horizontal scrollers (mobile filter row). */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
