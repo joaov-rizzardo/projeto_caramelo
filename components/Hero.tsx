@@ -1,208 +1,109 @@
-"use client";
-
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
-import { Heart, PawPrint } from "lucide-react";
-import { AnimatedCounter } from "./ui/AnimatedCounter";
-import { impactStats } from "@/lib/site";
-import { unsplash } from "@/lib/data";
+import { Heart, House, PawPrint, Users } from "lucide-react";
+import { Reveal } from "./ui/Reveal";
+import { CurvedArrow, HeartOutline } from "./ui/Doodles";
+import { BlobClipPaths } from "./ui/BlobClipPaths";
+import { photos, unsplash } from "@/lib/data";
+
+const pillars = [
+  { icon: PawPrint, label: ["Resgate", "e cuidado"] },
+  { icon: House, label: ["Adoção", "responsável"] },
+  { icon: Heart, label: ["Mais saúde", "e bem-estar"] },
+  { icon: Users, label: ["Uma cidade", "mais humana"] },
+] as const;
 
 export function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  const reduce = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start start", "end start"],
-  });
-  // Subtle parallax: heart drifts up, photo sinks slightly on scroll.
-  const heartY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -80]);
-  const photoY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : 60]);
-
   return (
-    <section
-      id="home"
-      ref={ref}
-      className="relative overflow-hidden pt-28 pb-16 sm:pt-32 lg:pb-24"
-    >
-      {/* Ambient paw texture wash */}
-      <div className="paw-texture pointer-events-none absolute inset-0 opacity-70" />
+    <section id="inicio" className="paw-texture relative overflow-hidden pt-28 lg:pt-32">
+      <BlobClipPaths />
+      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 pb-20 sm:px-6 lg:grid-cols-[1fr_1.2fr] lg:px-8 lg:pb-28">
+        <Reveal>
+          <p className="font-script text-3xl text-caramel">Projeto Caramelo</p>
+          <h1 className="mt-1 font-display text-4xl font-bold leading-[1.05] text-navy sm:text-5xl lg:text-[3.4rem]">
+            Mais do que resgatar animais, é sobre{" "}
+            <span className="whitespace-nowrap text-caramel">
+              reconstruir vidas.
+              <HeartOutline className="ml-2 inline-block h-9 w-9 -translate-y-4 text-caramel sm:h-10 sm:w-10" />
+            </span>
+          </h1>
+          <p className="mt-6 max-w-lg text-lg leading-relaxed text-navy/85">
+            O Projeto Caramelo é uma ONG que atua no resgate, acolhimento e
+            cuidado de cães e gatos em situação de abandono, promovendo adoção
+            responsável e conscientização na nossa cidade.
+          </p>
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-8 lg:px-8">
-        {/* --- Copy --- */}
-        <div className="text-center lg:text-left">
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="font-script text-2xl text-caramel-600 sm:text-3xl"
-          >
-            Cada focinho merece um lar
-          </motion.p>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.08 }}
-            className="mt-2 font-display text-4xl font-bold leading-[1.05] tracking-tight text-navy sm:text-5xl lg:text-6xl"
-          >
-            Resgatamos vidas,{" "}
-            <span className="relative whitespace-nowrap text-caramel">
-              devolvemos
-              <svg
-                className="absolute -bottom-2 left-0 w-full"
-                viewBox="0 0 200 12"
-                fill="none"
-                aria-hidden
+          <ul className="mt-9 grid max-w-xl grid-cols-2 gap-y-6 sm:grid-cols-4">
+            {pillars.map(({ icon: Icon, label }, i) => (
+              <li
+                key={label[0]}
+                className={`sm:border-navy/15 sm:px-4 sm:first:pl-0 ${i > 0 ? "sm:border-l" : ""}`}
               >
-                <path
-                  d="M2 8C40 3 160 3 198 8"
-                  stroke="#e8862e"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>{" "}
-            esperança
-          </motion.h1>
+                <Icon className="h-9 w-9 text-caramel" strokeWidth={2.2} aria-hidden />
+                <p className="mt-3 text-sm font-medium leading-snug text-navy">
+                  {label[0]}
+                  <br />
+                  {label[1]}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.16 }}
-            className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-navy/70 lg:mx-0"
-          >
-            O Projeto Caramelo resgata cães e gatos em situação de abandono,
-            cuida da saúde deles e encontra famílias cheias de amor. Faça parte
-            dessa corrente do bem.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.24 }}
-            className="mt-8 flex flex-col items-center gap-3 sm:flex-row lg:items-start lg:justify-start"
-          >
-            <a
-              href="#adotar"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-navy px-7 py-3.5 text-base font-bold text-cream shadow-lg transition-all hover:bg-navy-700 hover:shadow-xl active:scale-95 sm:w-auto"
-            >
-              <PawPrint className="h-5 w-5" aria-hidden />
-              Quero adotar
-            </a>
-            <a
-              href="#doar"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-caramel px-7 py-3.5 text-base font-bold text-white shadow-lg transition-all hover:bg-caramel-600 hover:shadow-xl active:scale-95 sm:w-auto"
-            >
-              <Heart className="h-5 w-5 fill-current" aria-hidden />
-              Doar via Pix
-            </a>
-          </motion.div>
-        </div>
-
-        {/* --- Hero image with glowing heart + mascots --- */}
-        <div className="relative mx-auto w-full max-w-md lg:max-w-none">
-          {/* Soft glowing heart shape behind the photo */}
-          <motion.div
-            style={{ y: heartY }}
-            className="pointer-events-none absolute -inset-6 -z-10 grid place-items-center"
+        <Reveal from="right" delay={0.1} className="relative mx-auto w-full max-w-xl lg:-mr-6 lg:max-w-none">
+          {/* Orange hand-drawn strokes hugging the photo */}
+          <svg
+            viewBox="0 0 300 200"
+            preserveAspectRatio="none"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="5"
+            strokeLinecap="round"
+            className="pointer-events-none absolute -inset-4 z-10 h-[calc(100%+2rem)] w-[calc(100%+2rem)] text-caramel"
             aria-hidden
           >
-            <svg viewBox="0 0 200 200" className="h-[115%] w-[115%]">
-              <defs>
-                <radialGradient id="heartGlow" cx="50%" cy="45%" r="60%">
-                  <stop offset="0%" stopColor="#f4b878" stopOpacity="0.95" />
-                  <stop offset="60%" stopColor="#e8862e" stopOpacity="0.55" />
-                  <stop offset="100%" stopColor="#e8862e" stopOpacity="0" />
-                </radialGradient>
-              </defs>
-              <path
-                d="M100 175S30 130 30 80c0-25 20-42 42-42 15 0 25 9 28 20 3-11 13-20 28-20 22 0 42 17 42 42 0 50-70 95-70 95z"
-                fill="url(#heartGlow)"
-              />
-            </svg>
-          </motion.div>
+            <path d="M34 6C18 14 8 30 5 50" vectorEffect="non-scaling-stroke" />
+            <path d="M296 118c2 32-10 60-36 78" vectorEffect="non-scaling-stroke" />
+          </svg>
 
-          <motion.div style={{ y: photoY }}>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] border-4 border-white shadow-2xl"
-            >
-              {/* TODO: replace with a real photo of a rescued Projeto Caramelo animal. */}
+          {/* drop-shadow on the wrapper, since clip-path would clip a box-shadow */}
+          <div className="drop-shadow-[0_24px_30px_rgba(18,41,74,0.3)]">
+            <div className="relative aspect-[3/2] [clip-path:url(#hero-blob)]">
               <Image
-                src={unsplash("photo-1518717758536-85ae29035b6d", 900, 1100)}
-                alt="Cão resgatado olhando para a câmera com expressão dócil"
+                src={unsplash(photos.hero, 1200, 800)}
+                alt="Um cachorro e um gato deitados juntos na grama"
                 fill
                 priority
-                sizes="(max-width: 1024px) 90vw, 45vw"
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
               />
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
-          {/* Floating dashed stat badge — echoes the reference post's boxes */}
-          <motion.div
-            initial={{ opacity: 0, y: 16, rotate: -6 }}
-            animate={{ opacity: 1, y: 0, rotate: -6 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="dashed-card absolute -left-3 top-8 bg-cream-soft px-4 py-2.5 shadow-lg sm:-left-6"
-          >
-            <p className="font-script text-lg leading-none text-caramel-600">
-              já resgatamos
+          <div className="absolute -top-6 right-0 z-10 flex rotate-[-10deg] flex-col items-end sm:-right-2 lg:-top-8">
+            <p className="rounded-2xl bg-cream-soft/85 px-3 py-1 text-right font-script text-2xl leading-tight text-navy backdrop-blur-sm sm:text-[1.7rem]">
+              Eles também
+              <br />
+              fazem parte
+              <br />
+              da nossa cidade!
             </p>
-            <p className="font-display text-xl font-bold leading-tight text-navy">
-              +1.240 amigos
-            </p>
-          </motion.div>
-
-          {/* Mascot spot — dog + cat.
-              TODO: replace these emoji badges with the official 3D mascot artwork. */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.7, type: "spring", stiffness: 200 }}
-            className="absolute -bottom-4 -right-2 flex sm:-right-5"
-            aria-hidden
-          >
-            <span className="grid h-16 w-16 place-items-center rounded-full border-4 border-white bg-caramel-300 text-3xl shadow-lg">
-              🐶
-            </span>
-            <span className="-ml-4 grid h-16 w-16 place-items-center rounded-full border-4 border-white bg-navy text-3xl shadow-lg">
-              🐱
-            </span>
-          </motion.div>
-        </div>
+            <div className="mr-10 flex items-center gap-1">
+              <HeartOutline className="h-6 w-6 text-caramel" />
+              <CurvedArrow className="h-10 w-16 -scale-x-100 text-caramel" />
+            </div>
+          </div>
+        </Reveal>
       </div>
 
-      {/* --- Impact counters --- */}
-      <div className="relative mx-auto mt-14 max-w-6xl px-4 sm:px-6 lg:mt-20 lg:px-8">
-        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-          {impactStats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="dashed-card bg-offwhite px-4 py-5 text-center"
-            >
-              <div className="font-display text-3xl font-bold text-caramel sm:text-4xl">
-                <AnimatedCounter
-                  value={stat.value}
-                  prefix={"prefix" in stat ? stat.prefix : ""}
-                  suffix={"suffix" in stat ? stat.suffix : ""}
-                  compact={"compact" in stat ? stat.compact : false}
-                />
-              </div>
-              <p className="mt-1 text-sm font-semibold text-navy/70">
-                {stat.label}
-              </p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
+      {/* Soft wave into the next section */}
+      <svg
+        viewBox="0 0 1440 80"
+        preserveAspectRatio="none"
+        className="absolute inset-x-0 bottom-0 h-12 w-full text-cream-soft sm:h-16"
+        aria-hidden
+      >
+        <path fill="currentColor" d="M0 40C240 80 480 0 720 24s480 56 720 16v40H0z" />
+      </svg>
     </section>
   );
 }

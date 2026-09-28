@@ -1,120 +1,69 @@
 import Image from "next/image";
-import { HandHeart, Home, ShieldCheck, Sparkles } from "lucide-react";
+import { PawPrint } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
-import { SectionHeading } from "./ui/SectionHeading";
-import { unsplash } from "@/lib/data";
-
-const values = [
-  {
-    icon: ShieldCheck,
-    title: "Transparência",
-    text: "Prestamos contas de cada real. Você acompanha para onde vai a sua doação.",
-  },
-  {
-    icon: HandHeart,
-    title: "Cuidado",
-    text: "Cada animal recebe atenção veterinária, carinho e tempo para se recuperar.",
-  },
-  {
-    icon: Home,
-    title: "Adoção responsável",
-    text: "Encontramos o lar certo para cada personalidade — sem pressa, com afeto.",
-  },
-  {
-    icon: Sparkles,
-    title: "Comunidade",
-    text: "Voluntários, doadores e adotantes: somos uma corrente do bem que não para.",
-  },
-];
-
-// Alternating image/text rows telling the NGO's story.
-const story = [
-  {
-    photoId: "photo-1601758228041-f3b2795255f1",
-    tag: "Nossa história",
-    heading: "Começou com um caramelo na chuva",
-    text: "Em 2018, um grupo de amigos resgatou um vira-lata caramelo tremendo de frio embaixo de uma marquise. Aquele focinho virou o símbolo de tudo o que fazemos hoje: acolher quem ninguém viu.",
-  },
-  {
-    photoId: "photo-1561037404-61cd46aa615b",
-    tag: "Nossa missão",
-    heading: "Resgatar, cuidar e reencontrar o amor",
-    text: "Tiramos das ruas animais feridos e abandonados, tratamos cada um até a plena recuperação e trabalhamos, dia após dia, para colocá-los em famílias que vão amá-los para sempre.",
-    reverse: true,
-  },
-];
+import { HeartOutline, Swoosh } from "./ui/Doodles";
+import { photos, unsplash } from "@/lib/data";
 
 export function About() {
   return (
-    <section id="sobre" className="relative scroll-mt-24 py-20 lg:py-28">
+    <section id="sobre" className="relative bg-cream-soft py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="Quem somos"
-          title="Uma ONG movida a focinhos e boa vontade"
-          description="Somos pessoas comuns unidas por uma missão: garantir que nenhum cão ou gato passe fome, frio ou medo nas ruas do Brasil."
-        />
+        <Reveal>
+          <h2 className="flex items-center gap-3 font-display text-3xl font-bold text-navy">
+            <PawPrint className="h-8 w-8 text-caramel" strokeWidth={2.4} aria-hidden />
+            Sobre nós
+          </h2>
+        </Reveal>
 
-        {/* Zig-zag story rows */}
-        <div className="mt-16 space-y-16 lg:space-y-24">
-          {story.map((row) => (
-            <div
-              key={row.heading}
-              className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14"
-            >
-              <Reveal
-                from={row.reverse ? "right" : "left"}
-                className={row.reverse ? "lg:order-2" : ""}
-              >
-                <div className="relative">
-                  <div className="relative aspect-[5/4] overflow-hidden rounded-[2rem] border-4 border-white shadow-xl">
-                    {/* TODO: replace with real Projeto Caramelo photos. */}
-                    <Image
-                      src={unsplash(row.photoId, 800, 640)}
-                      alt=""
-                      fill
-                      sizes="(max-width: 1024px) 90vw, 45vw"
-                      className="object-cover"
-                    />
-                  </div>
-                  <span className="heart-texture absolute -bottom-4 -z-10 h-24 w-40 rounded-3xl bg-caramel/20 blur-sm" />
-                </div>
-              </Reveal>
+        <div className="mt-8 grid items-center gap-10 lg:grid-cols-[0.8fr_1.5fr_1fr]">
+          <Reveal>
+            <p className="font-display text-3xl font-semibold leading-tight text-navy">
+              Uma ONG movida a
+              <br />
+              <span className="text-4xl font-bold text-caramel">fazer o bem</span>
+            </p>
+            <Swoosh className="mt-2 h-5 w-52 text-caramel" />
+          </Reveal>
 
-              <Reveal
-                from={row.reverse ? "left" : "right"}
-                className={row.reverse ? "lg:order-1" : ""}
-              >
-                <p className="font-script text-2xl text-caramel-600">
-                  {row.tag}
-                </p>
-                <h3 className="mt-1 font-display text-2xl font-bold text-navy sm:text-3xl">
-                  {row.heading}
-                </h3>
-                <p className="mt-4 text-lg leading-relaxed text-navy/70">
-                  {row.text}
-                </p>
-              </Reveal>
-            </div>
-          ))}
-        </div>
+          <Reveal delay={0.08} className="space-y-5 text-[15px] leading-relaxed text-navy/85">
+            <p>
+              O Projeto Caramelo nasceu do amor pelos animais e da vontade de
+              transformar realidades. Somos uma ONG independente, formada por
+              voluntários, que atua no resgate, acolhimento e cuidado de cães e
+              gatos em situação de abandono na nossa cidade.
+            </p>
+            <p>
+              Acreditamos que todo animal merece respeito, proteção e uma
+              família. Trabalhamos diariamente para promover a adoção
+              responsável, a saúde animal e a conscientização da comunidade
+              sobre o bem-estar dos pets.
+            </p>
+          </Reveal>
 
-        {/* Values grid */}
-        <div className="mt-20 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {values.map((value, i) => (
-            <Reveal key={value.title} delay={i * 0.08}>
-              <div className="h-full rounded-3xl bg-offwhite p-6 shadow-sm ring-1 ring-navy/5 transition-all hover:-translate-y-1 hover:shadow-md">
-                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-caramel/15 text-caramel-600">
-                  <value.icon className="h-6 w-6" aria-hidden />
-                </span>
-                <h4 className="mt-4 font-display text-lg font-bold text-navy">
-                  {value.title}
-                </h4>
-                <p className="mt-2 text-sm leading-relaxed text-navy/70">
-                  {value.text}
-                </p>
+          <Reveal from="right" delay={0.12} className="relative mx-auto w-full max-w-sm">
+            {/* Cream halo: the same blob shape, slightly larger, behind the photo */}
+            <div className="relative aspect-[4/3] bg-cream-deep p-2.5 [clip-path:url(#soft-blob)]">
+              <div className="relative h-full w-full [clip-path:url(#soft-blob)]">
+                <Image
+                  src={unsplash(photos.about, 1200, 800)}
+                  alt="Mão fazendo carinho em um cachorro dourado"
+                  fill
+                  sizes="(max-width: 1024px) 90vw, 25vw"
+                  className="object-cover object-[70%_40%]"
+                />
               </div>
-            </Reveal>
-          ))}
+            </div>
+            <div className="absolute -right-2 -top-12 flex rotate-[-10deg] flex-col items-end sm:-right-6">
+              <p className="rounded-xl bg-cream-soft/85 px-2 text-right font-script text-2xl leading-tight text-navy">
+                Juntos por
+                <br />
+                um futuro melhor
+                <br />
+                para eles!
+              </p>
+              <HeartOutline className="mr-2 mt-1 h-6 w-6 text-caramel" />
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

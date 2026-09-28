@@ -1,159 +1,91 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { SectionHeading } from "./ui/SectionHeading";
-import { AnimalCard, AnimalCardSkeleton } from "./AnimalCard";
+import Image from "next/image";
+import { useCallback, useState } from "react";
+import { ArrowRight, PawPrint } from "lucide-react";
+import { Reveal } from "./ui/Reveal";
 import { AnimalModal } from "./AnimalModal";
-import { animals, type Animal, type Size, type Species } from "@/lib/data";
-
-type SpeciesFilter = "all" | Species;
-type SizeFilter = "all" | Size;
-type AgeFilter = "all" | "puppy" | "adult"; // puppy = < 12 meses
-
-const speciesFilters: { value: SpeciesFilter; label: string }[] = [
-  { value: "all", label: "Todos" },
-  { value: "dog", label: "Cães" },
-  { value: "cat", label: "Gatos" },
-];
-const sizeFilters: { value: SizeFilter; label: string }[] = [
-  { value: "all", label: "Qualquer porte" },
-  { value: "small", label: "Pequeno" },
-  { value: "medium", label: "Médio" },
-  { value: "large", label: "Grande" },
-];
-const ageFilters: { value: AgeFilter; label: string }[] = [
-  { value: "all", label: "Qualquer idade" },
-  { value: "puppy", label: "Filhote" },
-  { value: "adult", label: "Adulto" },
-];
-
-function Chip({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-pressed={active}
-      className={`shrink-0 rounded-full px-4 py-2 text-sm font-bold transition-colors ${
-        active
-          ? "bg-navy text-cream shadow-md"
-          : "bg-offwhite text-navy/70 ring-1 ring-navy/10 hover:bg-caramel/10 hover:text-navy"
-      }`}
-    >
-      {children}
-    </button>
-  );
-}
+import { animals, unsplash, type Animal } from "@/lib/data";
 
 export function AdoptionSection() {
-  const [species, setSpecies] = useState<SpeciesFilter>("all");
-  const [size, setSize] = useState<SizeFilter>("all");
-  const [age, setAge] = useState<AgeFilter>("all");
-  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Animal | null>(null);
-
-  // Simulate mock data "loading" so skeletons are visible on first paint.
-  useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 700);
-    return () => clearTimeout(t);
-  }, []);
-
-  const filtered = useMemo(
-    () =>
-      animals.filter((a) => {
-        if (species !== "all" && a.species !== species) return false;
-        if (size !== "all" && a.size !== size) return false;
-        if (age === "puppy" && a.ageMonths >= 12) return false;
-        if (age === "adult" && a.ageMonths < 12) return false;
-        return true;
-      }),
-    [species, size, age],
-  );
+  const close = useCallback(() => setSelected(null), []);
 
   return (
-    <section id="adotar" className="relative scroll-mt-24 py-20 lg:py-28">
+    <section id="adocao" className="paw-texture relative bg-cream py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <SectionHeading
-          eyebrow="Adote um amigo"
-          title="Eles estão só esperando por você"
-          description="Todos os nossos animais são resgatados, vacinados, vermifugados e castrados. Use os filtros e encontre o companheiro perfeito."
-        />
-
-        {/* Filters */}
-        <div className="mt-10 space-y-3">
-          <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
-            {speciesFilters.map((f) => (
-              <Chip
-                key={f.value}
-                active={species === f.value}
-                onClick={() => setSpecies(f.value)}
-              >
-                {f.label}
-              </Chip>
-            ))}
-          </div>
-          <div className="no-scrollbar flex flex-wrap gap-2 overflow-x-auto pb-1">
-            {sizeFilters.map((f) => (
-              <Chip
-                key={f.value}
-                active={size === f.value}
-                onClick={() => setSize(f.value)}
-              >
-                {f.label}
-              </Chip>
-            ))}
-            {ageFilters.slice(1).map((f) => (
-              <Chip
-                key={f.value}
-                active={age === f.value}
-                onClick={() => setAge(age === f.value ? "all" : f.value)}
-              >
-                {f.label}
-              </Chip>
-            ))}
-          </div>
-        </div>
-
-        {/* Grid */}
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {loading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <AnimalCardSkeleton key={i} />
-            ))
-          ) : (
-            <AnimatePresence initial={false}>
-              {filtered.map((animal) => (
-                <AnimalCard
-                  key={animal.id}
-                  animal={animal}
-                  onOpen={setSelected}
-                />
-              ))}
-            </AnimatePresence>
-          )}
-        </div>
-
-        {/* Empty state */}
-        {!loading && filtered.length === 0 && (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mt-12 text-center text-lg font-semibold text-navy/60"
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <Reveal>
+            <p className="flex items-center gap-2 font-display text-xl font-semibold uppercase text-caramel">
+              <PawPrint className="h-7 w-7" strokeWidth={2.4} aria-hidden />
+              Adoção
+            </p>
+            <h2 className="mt-1 font-display text-3xl font-bold text-navy sm:text-4xl">
+              Encontre seu novo melhor amigo
+            </h2>
+            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-navy/85">
+              Dê uma chance a um pet que só precisa de amor, cuidado e um lar.
+              <br className="hidden sm:block" /> Cada adoção transforma duas
+              vidas: a do animal e a sua!
+            </p>
+          </Reveal>
+          {/* TODO: point to the full adoption listing once it exists. */}
+          <a
+            href="#adocao"
+            className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-caramel px-5 py-2.5 text-sm font-bold text-caramel transition-colors hover:bg-caramel hover:text-white"
           >
-            Nenhum focinho com esses filtros agora — tente ampliar a busca. 🐾
-          </motion.p>
-        )}
+            Ver todos os animais
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </a>
+        </div>
+
+        <ul className="mt-10 grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          {animals.map((a, i) => (
+            <Reveal as="li" key={a.id} delay={i * 0.05}>
+              <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-offwhite shadow-lg">
+                <div className="relative aspect-[4/3]">
+                  <Image
+                    src={unsplash(a.photoId, 480, 360)}
+                    alt={`Foto de ${a.name}`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
+                    className="object-cover"
+                  />
+                  <span
+                    className={`absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold text-white shadow ${
+                      a.species === "dog" ? "bg-caramel" : "bg-sky"
+                    }`}
+                  >
+                    {a.species === "dog" ? "Cão" : "Gato"}
+                  </span>
+                </div>
+                <div className="flex flex-1 flex-col p-4">
+                  <h3 className="font-display text-xl font-bold text-navy">{a.name}</h3>
+                  <p className="mt-1 flex items-center gap-x-1 whitespace-nowrap text-[11px] text-navy/70">
+                    <PawPrint className="h-3.5 w-3.5 text-navy" aria-hidden />
+                    {a.sex}
+                    <span className="text-caramel">|</span>
+                    {a.age}
+                    <span className="text-caramel">|</span>
+                    {a.size}
+                  </p>
+                  <p className="mt-3 flex-1 text-sm leading-snug text-navy/85">{a.bio}</p>
+                  <button
+                    type="button"
+                    onClick={() => setSelected(a)}
+                    className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-caramel px-4 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
+                  >
+                    <PawPrint className="h-4 w-4" aria-hidden />
+                    Quero adotar
+                  </button>
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </ul>
       </div>
 
-      <AnimalModal animal={selected} onClose={() => setSelected(null)} />
+      <AnimalModal animal={selected} onClose={close} />
     </section>
   );
 }

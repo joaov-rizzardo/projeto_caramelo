@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Fredoka, Caveat, Nunito } from "next/font/google";
 import "./globals.css";
 
-// Display: chunky, rounded, playful — mimics the hand-lettered "Muito
-// obrigado!" of the reference post.
+// Display: chunky, rounded, playful headlines.
 const fredoka = Fredoka({
   variable: "--font-fredoka",
   subsets: ["latin"],
@@ -25,11 +24,11 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Projeto Caramelo — Quem ama cuida",
+  title: "Projeto Caramelo — Amor que transforma vidas",
   description:
-    "ONG brasileira de resgate animal. Ajude a resgatar, cuidar e encontrar lares para cães e gatos. Doe via Pix, adote e seja voluntário.",
+    "ONG que atua no resgate, acolhimento e cuidado de cães e gatos em situação de abandono, promovendo adoção responsável e conscientização.",
   openGraph: {
-    title: "Projeto Caramelo — Quem ama cuida",
+    title: "Projeto Caramelo — Amor que transforma vidas",
     description:
       "Resgatamos, cuidamos e encontramos lares para animais. Cada focinho merece um lar.",
     type: "website",

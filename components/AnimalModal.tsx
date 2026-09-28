@@ -16,10 +16,13 @@ export function AnimalModal({
 }) {
   const [sent, setSent] = useState(false);
 
-  // Reset the form state whenever a different animal is opened.
-  useEffect(() => {
+  // Reset local state whenever a different animal is opened (adjusting
+  // state during render instead of in an effect).
+  const [shown, setShown] = useState(animal);
+  if (shown !== animal) {
+    setShown(animal);
     setSent(false);
-  }, [animal]);
+  }
 
   // Close on Escape + lock body scroll while open.
   useEffect(() => {
@@ -87,23 +90,9 @@ export function AnimalModal({
                   {animal.name}
                 </h3>
                 <p className="mt-1 text-sm font-semibold text-navy/60">
-                  {animal.age} · Porte{" "}
-                  {animal.size === "small"
-                    ? "pequeno"
-                    : animal.size === "medium"
-                      ? "médio"
-                      : "grande"}
+                  {animal.species === "dog" ? "Cão" : "Gato"} · {animal.sex} ·{" "}
+                  {animal.age} · {animal.size}
                 </p>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {animal.traits.map((t) => (
-                    <span
-                      key={t}
-                      className="rounded-full bg-caramel/10 px-2.5 py-0.5 text-xs font-semibold text-caramel-600"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
                 <p className="mt-4 text-sm leading-relaxed text-navy/75">
                   {animal.bio}
                 </p>
@@ -121,7 +110,7 @@ export function AnimalModal({
                         <Check className="h-5 w-5" />
                       </span>
                       <p className="text-sm font-semibold text-navy">
-                        Recebemos seu interesse pela {animal.name}! Nossa equipe
+                        Recebemos seu interesse em adotar {animal.name}! Nossa equipe
                         vai entrar em contato em breve. 💛
                       </p>
                     </motion.div>
@@ -164,7 +153,7 @@ export function AnimalModal({
                         className="flex w-full items-center justify-center gap-2 rounded-full bg-caramel px-5 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
                       >
                         <Heart className="h-4 w-4 fill-current" aria-hidden />
-                        Quero adotar a {animal.name}
+                        Quero adotar {animal.name}
                       </button>
                     </motion.form>
                   )}

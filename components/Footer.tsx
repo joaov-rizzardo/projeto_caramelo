@@ -1,7 +1,7 @@
-import { BadgeCheck, Mail, MapPin, Phone } from "lucide-react";
+import { Heart, PawPrint } from "lucide-react";
 import type { SVGProps } from "react";
 import { Logo } from "./Logo";
-import { navLinks, site } from "@/lib/site";
+import { site } from "@/lib/site";
 
 // Brand glyphs as inline SVGs — this lucide-react version no longer ships
 // social/brand icons.
@@ -37,89 +37,18 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer
-      id="contato"
-      className="relative scroll-mt-24 overflow-hidden bg-navy pt-16 text-cream"
-    >
-      <div className="paw-texture pointer-events-none absolute inset-0 opacity-30 invert" />
+    <footer id="contato" className="relative bg-navy text-cream">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-8 py-8 text-center md:grid-cols-4 md:divide-x md:divide-cream/15 md:text-left">
+          <Logo tone="cream" className="justify-center md:justify-start" />
 
-      {/* Mascots near the closing branding.
-          TODO: replace these emoji badges with official 3D mascot artwork. */}
-      <div
-        className="relative mx-auto mb-4 flex max-w-7xl justify-center px-4"
-        aria-hidden
-      >
-        <span className="grid h-16 w-16 place-items-center rounded-full border-4 border-navy bg-caramel-300 text-3xl shadow-lg">
-          🐶
-        </span>
-        <span className="-ml-4 grid h-16 w-16 place-items-center rounded-full border-4 border-navy bg-caramel text-3xl shadow-lg">
-          🐱
-        </span>
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 border-b border-cream/15 pb-12 md:grid-cols-4">
-          {/* Brand */}
-          <div className="md:col-span-2">
-            <Logo tone="cream" />
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-cream/70">
-              Resgatamos, cuidamos e encontramos lares para cães e gatos em
-              situação de abandono. Quem ama, cuida — e você pode fazer parte
-              disso.
+          <div id="noticias" className="flex flex-col items-center gap-3 md:px-6">
+            <p className="text-center text-sm text-cream/85">
+              Siga nossas redes e acompanhe
+              <br />
+              nossas histórias!
             </p>
-            <span className="mt-5 inline-flex items-center gap-2 rounded-full bg-cream/10 px-3 py-1.5 text-xs font-bold text-cream ring-1 ring-cream/20">
-              <BadgeCheck className="h-4 w-4 text-caramel-300" aria-hidden />
-              ONG verificada {/* TODO: link real verification/certificate */}
-            </span>
-          </div>
-
-          {/* Quick links */}
-          <nav aria-label="Links rápidos">
-            <h3 className="font-display text-lg font-bold text-cream">
-              Navegação
-            </h3>
-            <ul className="mt-4 space-y-2">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-cream/70 transition-colors hover:text-caramel-300"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Contact */}
-          <div>
-            <h3 className="font-display text-lg font-bold text-cream">
-              Contato
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-cream/70">
-              <li className="flex items-start gap-2">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-caramel-300" aria-hidden />
-                {site.address}
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 shrink-0 text-caramel-300" aria-hidden />
-                <a href={`tel:${site.phone}`} className="hover:text-caramel-300">
-                  {site.phone}
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail className="h-4 w-4 shrink-0 text-caramel-300" aria-hidden />
-                <a
-                  href={`mailto:${site.email}`}
-                  className="break-all hover:text-caramel-300"
-                >
-                  {site.email}
-                </a>
-              </li>
-            </ul>
-
-            <div className="mt-5 flex gap-2">
+            <div className="flex gap-3">
               {socials.map((s) => (
                 <a
                   key={s.label}
@@ -127,22 +56,38 @@ export function Footer() {
                   aria-label={s.label}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="grid h-10 w-10 place-items-center rounded-full bg-cream/10 text-cream transition-colors hover:bg-caramel hover:text-white"
+                  className="grid h-10 w-10 place-items-center rounded-full border-2 border-cream/80 text-cream transition-colors hover:border-caramel hover:bg-caramel hover:text-white"
                 >
                   <s.icon className="h-5 w-5" aria-hidden />
                 </a>
               ))}
             </div>
           </div>
+
+          <div className="flex flex-col items-center gap-1 md:px-6">
+            <p className="text-center font-script text-xl leading-snug text-cream">
+              “Adotar é um ato de amor,
+              <br />
+              mas também é um ato de cidadania.”
+            </p>
+            <PawPrint className="h-6 w-6 text-caramel" aria-hidden />
+          </div>
+
+          <div className="flex justify-center md:justify-end">
+            <a
+              href="#vakinhas"
+              className="inline-flex items-center gap-2 rounded-xl bg-caramel px-8 py-4 font-display text-lg font-semibold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
+            >
+              <Heart className="h-5 w-5" strokeWidth={2.6} aria-hidden />
+              Doe Agora
+            </a>
+          </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-3 py-6 text-xs text-cream/60 sm:flex-row">
-          <p>
-            © {new Date().getFullYear()} {site.name}. Feito com 💛 para quem não
-            tem voz.
-          </p>
-          <p>CNPJ {site.cnpj} {/* placeholder */}</p>
-        </div>
+        <p className="border-t border-cream/15 py-6 text-center text-xs text-cream/75">
+          {site.name} • Construindo uma cidade mais justa e humana para todos os
+          animais.
+        </p>
       </div>
     </footer>
   );
