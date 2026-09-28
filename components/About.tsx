@@ -6,7 +6,7 @@ import { photos, unsplash } from "@/lib/data";
 
 export function About() {
   return (
-    <section id="sobre" className="relative bg-cream-soft py-16 lg:py-20">
+    <section id="sobre" className="relative bg-cream-soft pb-8 pt-10 sm:pb-16 sm:pt-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Reveal>
           <h2 className="flex items-center gap-3 font-display text-3xl font-bold text-navy">
@@ -40,7 +40,8 @@ export function About() {
             </p>
           </Reveal>
 
-          <Reveal from="right" delay={0.12} className="relative mx-auto w-full max-w-sm">
+          {/* Stacked layout: leave room above the photo for the handwritten note. */}
+          <Reveal from="right" delay={0.12} className="relative mx-auto mt-12 w-full max-w-sm lg:mt-0">
             {/* Cream halo: the same blob shape, slightly larger, behind the photo */}
             <div className="relative aspect-[4/3] bg-cream-deep p-2.5 [clip-path:url(#soft-blob)]">
               <div className="relative h-full w-full [clip-path:url(#soft-blob)]">
@@ -53,7 +54,7 @@ export function About() {
                 />
               </div>
             </div>
-            <div className="absolute -right-2 -top-12 flex rotate-[-10deg] flex-col items-end sm:-right-6">
+            <div className="absolute -top-12 right-0 flex rotate-[-10deg] flex-col items-end sm:-right-6">
               <p className="rounded-xl bg-cream-soft/85 px-2 text-right font-script text-2xl leading-tight text-navy">
                 Juntos por
                 <br />

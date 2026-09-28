@@ -40,10 +40,21 @@ html {
 }
 
 body {
+  /* Decorative notes, doodles and slide-in reveals poke past the edges on small
+     screens; clip them so the page never scrolls sideways. */
+  overflow-x: clip;
   background-color: var(--color-cream);
   color: var(--color-navy);
   font-family: var(--font-body), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Swipeable card rows on mobile: keep the scroll, hide the bar. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Respect users who prefer reduced motion — kill transforms/animations. */

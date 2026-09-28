@@ -71,7 +71,7 @@ export function AnimalModal({
 
             <div className="grid gap-0 sm:grid-cols-2">
               {/* Photos */}
-              <div className="relative aspect-square sm:aspect-auto">
+              <div className="relative aspect-[4/3] sm:aspect-auto">
                 <Image
                   src={unsplash(animal.photoId, 700, 700)}
                   alt={`Foto de ${animal.name}`}

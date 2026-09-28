@@ -16,14 +16,17 @@ export function Hero() {
   return (
     <section id="inicio" className="paw-texture relative overflow-hidden pt-28 lg:pt-32">
       <BlobClipPaths />
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 pb-20 sm:px-6 lg:grid-cols-[1fr_1.2fr] lg:px-8 lg:pb-28">
+      <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)] items-center gap-12 px-4 pb-14 sm:px-6 sm:pb-20 lg:grid-cols-[1fr_1.2fr] lg:px-8 lg:pb-28">
         <Reveal>
           <p className="font-script text-3xl text-caramel">Projeto Caramelo</p>
-          <h1 className="mt-1 font-display text-4xl font-bold leading-[1.05] text-navy sm:text-5xl lg:text-[3.4rem]">
+          <h1 className="mt-1 font-display text-[2rem] font-bold leading-[1.05] text-navy min-[380px]:text-4xl sm:text-5xl lg:text-[3.4rem]">
             Mais do que resgatar animais, é sobre{" "}
-            <span className="whitespace-nowrap text-caramel">
-              reconstruir vidas.
-              <HeartOutline className="ml-2 inline-block h-9 w-9 -translate-y-4 text-caramel sm:h-10 sm:w-10" />
+            <span className="text-caramel">
+              reconstruir{" "}
+              <span className="whitespace-nowrap">
+                vidas.
+                <HeartOutline className="ml-2 inline-block h-8 w-8 -translate-y-1.5 text-caramel sm:h-10 sm:w-10 sm:-translate-y-4" />
+              </span>
             </span>
           </h1>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-navy/85">
@@ -58,7 +61,7 @@ export function Hero() {
             stroke="currentColor"
             strokeWidth="5"
             strokeLinecap="round"
-            className="pointer-events-none absolute -inset-4 z-10 h-[calc(100%+2rem)] w-[calc(100%+2rem)] text-caramel"
+            className="pointer-events-none absolute -inset-2 z-10 h-[calc(100%+1rem)] w-[calc(100%+1rem)] text-caramel sm:-inset-4 sm:h-[calc(100%+2rem)] sm:w-[calc(100%+2rem)]"
             aria-hidden
           >
             <path d="M34 6C18 14 8 30 5 50" vectorEffect="non-scaling-stroke" />
@@ -79,8 +82,8 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="absolute -top-6 right-0 z-10 flex rotate-[-10deg] flex-col items-end sm:-right-2 lg:-top-8">
-            <p className="rounded-2xl bg-cream-soft/85 px-3 py-1 text-right font-script text-2xl leading-tight text-navy backdrop-blur-sm sm:text-[1.7rem]">
+          <div className="absolute -top-8 right-0 z-10 flex rotate-[-10deg] flex-col items-end sm:-right-2 lg:-top-8">
+            <p className="rounded-2xl bg-cream-soft/85 px-3 py-1 text-right font-script text-xl leading-tight text-navy backdrop-blur-sm min-[380px]:text-2xl sm:text-[1.7rem]">
               Eles também
               <br />
               fazem parte

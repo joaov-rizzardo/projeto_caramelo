@@ -13,9 +13,9 @@ export function CampaignsSection() {
   const close = useCallback(() => setSelected(null), []);
 
   return (
-    <section id="vakinhas" className="relative bg-cream-soft px-3 py-10 sm:px-6">
+    <section id="vakinhas" className="relative bg-cream-soft px-3 pb-10 pt-6 sm:px-6 sm:pt-10">
       {/* Orange + navy waves peeking out behind the panel */}
-      <div className="absolute inset-x-0 bottom-0 top-1/3 overflow-hidden" aria-hidden>
+      <div className="absolute inset-x-0 bottom-0 top-[calc(100%-9rem)] overflow-hidden sm:top-1/3" aria-hidden>
         <svg viewBox="0 0 1440 400" preserveAspectRatio="none" className="h-full w-full">
           <path fill="#f47b20" d="M0 20C300 -10 500 60 760 40s500-50 680 0v360H0z" />
           <path fill="#12294a" d="M0 70C320 40 520 110 780 90s480-50 660-10v330H0z" />
@@ -52,11 +52,17 @@ export function CampaignsSection() {
           </div>
         </div>
 
-        <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Mobile: swipeable row with the next card peeking in; grid from sm up. */}
+        <ul className="no-scrollbar -mx-5 mt-8 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
           {campaigns.map((c, i) => {
             const pct = Math.min(100, Math.round((c.raised / c.goal) * 100));
             return (
-              <Reveal as="li" key={c.id} delay={i * 0.06}>
+              <Reveal
+                as="li"
+                key={c.id}
+                delay={i * 0.06}
+                className="w-[82%] max-w-80 shrink-0 snap-start sm:w-auto sm:max-w-none"
+              >
                 <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-offwhite shadow-lg">
                   <div className="relative h-36">
                     <Image

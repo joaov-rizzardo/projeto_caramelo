@@ -67,7 +67,7 @@ export function CampaignModal({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 40, opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-cream-soft shadow-2xl sm:rounded-3xl"
+            className="relative max-h-[92vh] w-full overflow-y-auto rounded-t-3xl bg-cream-soft shadow-2xl sm:max-w-md sm:rounded-3xl"
           >
             <button
               type="button"

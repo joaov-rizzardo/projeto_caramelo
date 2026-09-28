@@ -39,9 +39,15 @@ export function AdoptionSection() {
           </a>
         </div>
 
-        <ul className="mt-10 grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        {/* Mobile: swipeable row with the next card peeking in; grid from sm up. */}
+        <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3 lg:grid-cols-5">
           {animals.map((a, i) => (
-            <Reveal as="li" key={a.id} delay={i * 0.05}>
+            <Reveal
+              as="li"
+              key={a.id}
+              delay={i * 0.05}
+              className="w-[72%] max-w-72 shrink-0 snap-start sm:w-auto sm:max-w-none"
+            >
               <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-offwhite shadow-lg">
                 <div className="relative aspect-[4/3]">
                   <Image
