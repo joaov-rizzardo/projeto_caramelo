@@ -3,7 +3,7 @@
 
 export const site = {
   name: "Projeto Caramelo",
-  tagline: "Amor que transforma vidas",
+  tagline: "Quem ama cuida",
   // TODO: replace with the NGO's real contact details before launch.
   email: "contato@projetocaramelo.org.br",
   socials: {

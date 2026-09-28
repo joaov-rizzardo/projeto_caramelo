@@ -31,7 +31,7 @@ export function Logo({
           Caramelo
         </span>
         <span className={`font-script text-sm leading-none ${tagColor} sm:text-base`}>
-          Amor que transforma vidas
+          Quem ama cuida
         </span>
       </span>
     </a>
