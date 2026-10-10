@@ -6,13 +6,12 @@ import { remove, save, saveWithPhoto } from "@/lib/admin/store";
 import {
   imageSpecs,
   newId,
-  parseMoney,
   today,
   vakinhaCategories,
   type Vakinha,
 } from "@/lib/admin/models";
 import { ImageCropField, MissingPhoto, type ImageCropHandle } from "./ImageCropField";
-import { Button, Field, Input, Select, Textarea } from "./ui";
+import { Button, Field, Input, MoneyInput, Select, Textarea } from "./ui";
 
 const blank = (): Vakinha => ({
   id: newId(),
@@ -35,7 +34,7 @@ export function VakinhaForm({
   onDone: () => void;
 }) {
   const [draft, setDraft] = useState<Vakinha>(() => vakinha ?? blank());
-  const [goal, setGoal] = useState(() => (vakinha ? String(vakinha.goal) : ""));
+  const [goal, setGoal] = useState<number | null>(() => vakinha?.goal ?? null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirm, setConfirm] = useState<"close" | "delete" | null>(null);
@@ -63,8 +62,7 @@ export function VakinhaForm({
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    const goalValue = parseMoney(goal);
-    if (!(goalValue > 0)) return setError("Informe uma meta válida.");
+    if (!goal) return setError("Informe uma meta válida.");
     run(async () => {
       const photo = await photoRef.current!.resolve();
       if (!photo) throw new MissingPhoto();
@@ -72,7 +70,7 @@ export function VakinhaForm({
         save("vakinhas", {
           ...draft,
           title: draft.title.trim(),
-          goal: goalValue,
+          goal,
           photo,
           // Donations are saved from their own dialog — keep the latest.
           donations: vakinha?.donations ?? [],
@@ -102,14 +100,8 @@ export function VakinhaForm({
               ))}
             </Select>
           </Field>
-          <Field label="Meta (R$)">
-            <Input
-              required
-              inputMode="decimal"
-              placeholder="3.000,00"
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-            />
+          <Field label="Meta">
+            <MoneyInput required placeholder="R$ 3.000,00" value={goal} onChange={setGoal} />
           </Field>
         </div>
         <Field label="Descrição" hint={`${draft.description.length}/220`}>

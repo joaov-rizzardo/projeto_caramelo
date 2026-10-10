@@ -56,14 +56,6 @@ export const vakinhaCategories = [
 export const money = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
-// Accepts "1.234,56", "1.000", "1234.56", "50" → number (NaN when invalid).
-export function parseMoney(raw: string) {
-  const s = raw.replace(/[R$\s]/g, "");
-  if (s.includes(",")) return Number(s.replace(/\./g, "").replace(",", "."));
-  // Without a comma, dots followed by 3 digits are thousand separators.
-  return Number(/^\d{1,3}(\.\d{3})+$/.test(s) ? s.replace(/\./g, "") : s);
-}
-
 export const raisedOf = (v: Vakinha) => v.donations.reduce((sum, d) => sum + d.amount, 0);
 
 // crypto.randomUUID only exists in secure contexts (https / localhost), so it

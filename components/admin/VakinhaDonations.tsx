@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { Archive, Plus, Trash2 } from "lucide-react";
 import { remove, save } from "@/lib/admin/store";
-import { formatDate, money, newId, parseMoney, raisedOf, today, type Vakinha } from "@/lib/admin/models";
-import { Button, Field, Input } from "./ui";
+import { formatDate, money, newId, raisedOf, today, type Vakinha } from "@/lib/admin/models";
+import { Button, Field, Input, MoneyInput } from "./ui";
 
 // Ledger of received donations; the raised total shown on the site is its sum.
 // Each entry is persisted as soon as it's added or removed.
@@ -15,7 +15,7 @@ export function VakinhaDonations({
   vakinha: Vakinha; // live record
   readOnly?: boolean;
 }) {
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState<number | null>(null);
   const [date, setDate] = useState(today);
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -26,14 +26,13 @@ export function VakinhaDonations({
 
   async function add(e: React.FormEvent) {
     e.preventDefault();
-    const value = parseMoney(amount);
-    if (!(value > 0)) return setError("Informe um valor válido.");
+    if (!amount) return setError("Informe um valor válido.");
     setError(null);
     await save("vakinhas", {
       ...vakinha,
-      donations: [...vakinha.donations, { id: newId(), amount: value, date, note: note.trim() }],
+      donations: [...vakinha.donations, { id: newId(), amount, date, note: note.trim() }],
     });
-    setAmount("");
+    setAmount(null);
     setNote("");
   }
 
@@ -58,14 +57,8 @@ export function VakinhaDonations({
           onSubmit={add}
           className="mt-5 grid grid-cols-2 gap-3 rounded-2xl bg-white p-3"
         >
-          <Field label="Valor (R$)">
-            <Input
-              required
-              inputMode="decimal"
-              placeholder="50,00"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
+          <Field label="Valor">
+            <MoneyInput required placeholder="R$ 50,00" value={amount} onChange={setAmount} />
           </Field>
           <Field label="Data">
             <Input type="date" required value={date} max={today()} onChange={(e) => setDate(e.target.value)} />

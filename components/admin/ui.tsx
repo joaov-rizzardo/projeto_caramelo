@@ -5,6 +5,7 @@
 import { useEffect, type ComponentProps, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { X, type LucideIcon } from "lucide-react";
+import { money } from "@/lib/admin/models";
 
 const fieldClass =
   "mt-1 w-full rounded-xl border-2 border-navy/10 bg-white px-3 py-2 text-sm text-navy outline-none transition-colors focus:border-caramel";
@@ -32,6 +33,31 @@ export function Field({
 export const Input = (props: ComponentProps<"input">) => (
   <input {...props} className={`${fieldClass} ${props.className ?? ""}`} />
 );
+
+// Currency field with an ATM-style mask: digits fill in from the cents
+// ("5" → R$ 0,05, "5000" → R$ 50,00). Works with numbers, never strings.
+export function MoneyInput({
+  value,
+  onChange,
+  ...props
+}: Omit<ComponentProps<"input">, "value" | "onChange" | "type" | "inputMode"> & {
+  value: number | null;
+  onChange: (value: number | null) => void;
+}) {
+  return (
+    <Input
+      {...props}
+      type="text"
+      inputMode="numeric"
+      value={value === null ? "" : money(value)}
+      onChange={(e) => {
+        // Max 11 digits (R$ 999.999.999,99) keeps us clear of float issues.
+        const digits = e.target.value.replace(/\D/g, "").replace(/^0+/, "").slice(0, 11);
+        onChange(digits ? Number(digits) / 100 : null);
+      }}
+    />
+  );
+}
 
 export const Textarea = (props: ComponentProps<"textarea">) => (
   <textarea rows={4} {...props} className={`${fieldClass} resize-y ${props.className ?? ""}`} />
