@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useMemo, useState } from "react";
-import { Pencil, Plus, Search } from "lucide-react";
+import { PawPrint, Pencil, Plus, Search, SearchX } from "lucide-react";
 import { useCollection } from "@/lib/admin/store";
 import type { Pet } from "@/lib/admin/models";
 import { PetForm } from "@/components/admin/PetForm";
@@ -51,8 +51,31 @@ export default function PetsPage() {
       </div>
 
       <div className="mt-6">
-        {pets && visible.length === 0 ? (
-          <EmptyState>Nenhum pet encontrado.</EmptyState>
+        {pets?.length === 0 ? (
+          <EmptyState
+            icon={PawPrint}
+            title="Nenhum pet para adoção"
+            action={
+              <Button onClick={() => setEditing("new")}>
+                <Plus className="h-4 w-4" aria-hidden />
+                Cadastrar o primeiro pet
+              </Button>
+            }
+          >
+            Os pets cadastrados aqui aparecem na seção de adoção do site.
+          </EmptyState>
+        ) : pets && visible.length === 0 ? (
+          <EmptyState
+            icon={SearchX}
+            title="Nenhum pet encontrado"
+            action={
+              <Button variant="ghost" onClick={() => setQuery("")}>
+                Limpar busca
+              </Button>
+            }
+          >
+            Nenhum nome corresponde a “{query.trim()}”.
+          </EmptyState>
         ) : (
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {visible.map((p, i) => (

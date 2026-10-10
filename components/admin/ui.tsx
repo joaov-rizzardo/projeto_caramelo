@@ -4,7 +4,7 @@
 // the public site's inputs (AnimalModal) so the brand feels continuous.
 import { useEffect, type ComponentProps, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { X } from "lucide-react";
+import { X, type LucideIcon } from "lucide-react";
 
 const fieldClass =
   "mt-1 w-full rounded-xl border-2 border-navy/10 bg-white px-3 py-2 text-sm text-navy outline-none transition-colors focus:border-caramel";
@@ -129,10 +129,25 @@ export function Dialog({
   );
 }
 
-export function EmptyState({ children }: { children: ReactNode }) {
+export function EmptyState({
+  icon: Icon,
+  title,
+  children,
+  action,
+}: {
+  icon: LucideIcon;
+  title: string;
+  children?: ReactNode;
+  action?: ReactNode;
+}) {
   return (
-    <p className="rounded-2xl border-2 border-dashed border-navy/15 p-10 text-center text-sm text-navy/60">
-      {children}
-    </p>
+    <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-navy/15 px-6 py-12 text-center">
+      <span className="grid h-14 w-14 place-items-center rounded-full bg-caramel/10 text-caramel">
+        <Icon className="h-7 w-7" aria-hidden />
+      </span>
+      <h2 className="mt-4 font-display text-xl font-bold text-navy">{title}</h2>
+      {children && <p className="mt-1 max-w-sm text-sm text-navy/60">{children}</p>}
+      {action && <div className="mt-5">{action}</div>}
+    </div>
   );
 }

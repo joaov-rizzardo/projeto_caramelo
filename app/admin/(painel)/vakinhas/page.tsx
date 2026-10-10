@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useMemo, useState } from "react";
-import { Eye, HandCoins, Pencil, Plus } from "lucide-react";
+import { Eye, HandCoins, HeartHandshake, Pencil, Plus } from "lucide-react";
 import { useCollection } from "@/lib/admin/store";
 import { formatDate, money, raisedOf, type Vakinha } from "@/lib/admin/models";
 import { VakinhaForm } from "@/components/admin/VakinhaForm";
@@ -47,7 +47,20 @@ export default function VakinhasPage() {
 
       <div className="mt-6">
         {vakinhas && open.length === 0 ? (
-          <EmptyState>Nenhuma vakinha ativa.</EmptyState>
+          <EmptyState
+            icon={HeartHandshake}
+            title="Nenhuma vakinha ativa"
+            action={
+              <Button onClick={() => setPanel({ kind: "new" })}>
+                <Plus className="h-4 w-4" aria-hidden />
+                Criar vakinha
+              </Button>
+            }
+          >
+            {closed.length > 0
+              ? "Todas as campanhas foram encerradas. Crie uma nova quando surgir outra necessidade."
+              : "Crie uma vakinha para arrecadar fundos para tratamentos, cirurgias e outras necessidades."}
+          </EmptyState>
         ) : (
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {open.map((v, i) => (
