@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
       { protocol: "https", hostname: "picsum.photos", pathname: "/**" },
       { protocol: "https", hostname: "fastly.picsum.photos", pathname: "/**" },
+      // Photos uploaded from the admin area.
+      { protocol: "https", hostname: "res.cloudinary.com", pathname: "/**" },
     ],
   },
   allowedDevOrigins: [

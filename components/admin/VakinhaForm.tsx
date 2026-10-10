@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Archive, Loader2, Save, Trash2 } from "lucide-react";
-import { remove, save } from "@/lib/admin/store";
+import { remove, save, saveWithPhoto } from "@/lib/admin/store";
 import {
   imageSpecs,
   newId,
@@ -51,10 +51,11 @@ export function VakinhaForm({
       await action();
       onDone();
     } catch (e) {
+      if (!(e instanceof MissingPhoto)) console.error(e);
       setError(
         e instanceof MissingPhoto
           ? "Adicione uma foto para a vakinha."
-          : "Não foi possível salvar. Tente uma foto menor ou remova cadastros antigos.",
+          : "Não foi possível salvar. Verifique sua conexão e tente novamente.",
       );
       setBusy(false);
     }
@@ -67,14 +68,16 @@ export function VakinhaForm({
     run(async () => {
       const photo = await photoRef.current!.resolve();
       if (!photo) throw new MissingPhoto();
-      await save("vakinhas", {
-        ...draft,
-        title: draft.title.trim(),
-        goal: goalValue,
-        photo,
-        // Donations are saved from their own dialog — keep the latest.
-        donations: vakinha?.donations ?? [],
-      });
+      await saveWithPhoto(draft.photo, photo, () =>
+        save("vakinhas", {
+          ...draft,
+          title: draft.title.trim(),
+          goal: goalValue,
+          photo,
+          // Donations are saved from their own dialog — keep the latest.
+          donations: vakinha?.donations ?? [],
+        }),
+      );
     });
   }
 

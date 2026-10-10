@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Loader2, Save, Trash2 } from "lucide-react";
-import { remove, save } from "@/lib/admin/store";
+import { remove, save, saveWithPhoto } from "@/lib/admin/store";
 import { imageSpecs, newId, petSizes, type Pet } from "@/lib/admin/models";
 import { ImageCropField, MissingPhoto, type ImageCropHandle } from "./ImageCropField";
 import { Button, Field, Input, Select, Textarea } from "./ui";
@@ -35,10 +35,11 @@ export function PetForm({ pet, onDone }: { pet: Pet | null; onDone: () => void }
       await action();
       onDone();
     } catch (e) {
+      if (!(e instanceof MissingPhoto)) console.error(e);
       setError(
         e instanceof MissingPhoto
           ? "Adicione uma foto do pet."
-          : "Não foi possível salvar. Tente uma foto menor ou remova cadastros antigos.",
+          : "Não foi possível salvar. Verifique sua conexão e tente novamente.",
       );
       setBusy(false);
     }
@@ -49,7 +50,9 @@ export function PetForm({ pet, onDone }: { pet: Pet | null; onDone: () => void }
     run(async () => {
       const photo = await photoRef.current!.resolve();
       if (!photo) throw new MissingPhoto();
-      await save("pets", { ...draft, name: draft.name.trim(), photo });
+      await saveWithPhoto(draft.photo, photo, () =>
+        save("pets", { ...draft, name: draft.name.trim(), photo }),
+      );
     });
   }
 

@@ -1,103 +1,198 @@
 "use client";
 
-// PROTOTYPE backend: everything is persisted in the browser's localStorage.
-// Each exported function is a seam for the real stack:
-//   - signIn / signOut      → Firebase Auth (email + password)
-//   - useCollection / save / remove → Firestore collections
-//   - uploadImage           → Cloudinary upload (returns the hosted URL)
+// Admin backend:
+//   - signIn / signOut / useSession       → Firebase Auth (email + password)
+//   - useCollection / save / remove       → Firestore (one doc per pet / vakinha)
+//   - uploadImage / deleteImage           → Cloudinary, signed by /api/admin/images
+// Images are owned by their record: replacing a photo, closing a vakinha
+// (photo cleared) or deleting a record also deletes the old image.
 import { useSyncExternalStore } from "react";
-import { seedPets, seedVakinhas, type Pet, type Vakinha } from "./models";
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
+} from "firebase/auth";
+import { collection, deleteDoc, doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+import { FirebaseError } from "firebase/app";
+import { auth, db } from "@/lib/firebase/client";
+import type { Pet, Vakinha } from "./models";
 
-const PREFIX = "caramelo-admin:";
-const listeners = new Set<() => void>();
-const cache = new Map<string, unknown>();
+// --- Session -------------------------------------------------------------
 
-function read<T>(key: string, fallback: () => T): T {
-  if (cache.has(key)) return cache.get(key) as T;
-  let value: T;
-  try {
-    const raw = localStorage.getItem(PREFIX + key);
-    value = raw === null ? fallback() : (JSON.parse(raw) as T);
-  } catch {
-    value = fallback();
-  }
-  cache.set(key, value);
-  return value;
+// undefined until Firebase restores the persisted session, then email | null.
+let session: string | null | undefined;
+const sessionListeners = new Set<() => void>();
+let stopSession: (() => void) | undefined;
+
+function subscribeSession(listener: () => void) {
+  sessionListeners.add(listener);
+  stopSession ??= onAuthStateChanged(auth(), (user) => {
+    session = user?.email ?? null;
+    sessionListeners.forEach((l) => l());
+  });
+  return () => {
+    sessionListeners.delete(listener);
+    if (sessionListeners.size === 0) {
+      stopSession?.();
+      stopSession = undefined;
+    }
+  };
 }
 
-function write<T>(key: string, value: T) {
-  // Throws QuotaExceededError when the browser storage is full (mostly images);
-  // callers surface that to the user.
-  localStorage.setItem(PREFIX + key, JSON.stringify(value));
-  cache.set(key, value);
-  listeners.forEach((l) => l());
-}
-
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
-}
-
-// `undefined` while rendering on the server / before hydration.
-function useStored<T>(key: string, fallback: () => T): T | undefined {
+export function useSession() {
   return useSyncExternalStore(
-    subscribe,
-    () => read(key, fallback),
+    subscribeSession,
+    () => session,
     () => undefined,
   );
 }
 
-// --- Session -------------------------------------------------------------
-
-// Demo credentials shown on the login screen while this is a prototype.
-export const DEMO_LOGIN = { email: "admin@projetocaramelo.org.br", password: "caramelo123" };
-
-export function useSession() {
-  return useStored<string | null>("session", () => null);
-}
-
 export async function signIn(email: string, password: string) {
-  await new Promise((r) => setTimeout(r, 400)); // feel of a network call
-  if (email.trim().toLowerCase() !== DEMO_LOGIN.email || password !== DEMO_LOGIN.password) {
-    throw new Error("E-mail ou senha incorretos.");
+  try {
+    await signInWithEmailAndPassword(auth(), email.trim(), password);
+  } catch (e) {
+    const code = e instanceof FirebaseError ? e.code : "";
+    throw new Error(
+      code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found"
+        ? "E-mail ou senha incorretos."
+        : code === "auth/too-many-requests"
+          ? "Muitas tentativas. Aguarde alguns minutos e tente de novo."
+          : "Não foi possível entrar. Verifique sua conexão.",
+    );
   }
-  write("session", DEMO_LOGIN.email);
 }
 
 export function signOut() {
-  write("session", null);
+  return firebaseSignOut(auth());
 }
 
 // --- Collections ---------------------------------------------------------
 
-const collections = { pets: seedPets, vakinhas: seedVakinhas };
 type Collections = { pets: Pet; vakinhas: Vakinha };
 type Name = keyof Collections;
 
+// One live Firestore listener per collection, shared by every hook using it
+// and closed when the last one unmounts. `subscribe` must be a stable function:
+// a new one each render makes React resubscribe on every render.
+type Live = { items?: unknown[]; listeners: Set<() => void>; stop?: () => void; subscribe: (l: () => void) => () => void };
+const live = new Map<Name, Live>();
+
+function entry(name: Name) {
+  const existing = live.get(name);
+  if (existing) return existing;
+  const created: Live = {
+    listeners: new Set(),
+    subscribe(listener) {
+      created.listeners.add(listener);
+      created.stop ??= onSnapshot(
+        collection(db(), name),
+        (snap) => {
+          created.items = snap.docs.map((d) => ({ ...d.data(), id: d.id }));
+          created.listeners.forEach((l) => l());
+        },
+        (error) => {
+          // The listener is dead after an error; allow a later resubscribe.
+          console.error(`Firestore "${name}":`, error);
+          created.stop = undefined;
+          created.items = [];
+          created.listeners.forEach((l) => l());
+        },
+      );
+      return () => {
+        created.listeners.delete(listener);
+        if (created.listeners.size === 0) {
+          created.stop?.();
+          created.stop = undefined;
+          // Keep the last items so switching tabs doesn't flash "loading";
+          // the next snapshot replaces them.
+        }
+      };
+    },
+  };
+  live.set(name, created);
+  return created;
+}
+
+// `undefined` while loading (and on the server).
 export function useCollection<N extends Name>(name: N) {
-  return useStored<Collections[N][]>(name, collections[name] as () => Collections[N][]);
+  const e = entry(name);
+  return useSyncExternalStore(
+    e.subscribe,
+    () => e.items as Collections[N][] | undefined,
+    () => undefined,
+  );
 }
 
 export async function save<N extends Name>(name: N, item: Collections[N]) {
-  const items = read<Collections[N][]>(name, collections[name] as () => Collections[N][]);
-  const exists = items.some((i) => i.id === item.id);
-  write(name, exists ? items.map((i) => (i.id === item.id ? item : i)) : [item, ...items]);
+  const { id, ...data } = item;
+  const ref = doc(db(), name, id);
+  const previous = (await getDoc(ref)).get("photo") as string | undefined;
+  await setDoc(ref, data);
+  if (previous && previous !== item.photo) await deleteImage(previous);
+}
+
+// Runs a save that follows a fresh upload. If the save fails, the new upload
+// is deleted so it doesn't sit orphaned in Cloudinary; on success, `save`
+// already deleted the previous photo.
+export async function saveWithPhoto(current: string, photo: string, run: () => Promise<void>) {
+  try {
+    await run();
+  } catch (e) {
+    if (photo !== current) await deleteImage(photo);
+    throw e;
+  }
 }
 
 export async function remove(name: Name, id: string) {
-  const items = read<{ id: string }[]>(name, collections[name]);
-  write(name, items.filter((i) => i.id !== id));
+  const ref = doc(db(), name, id);
+  const photo = (await getDoc(ref)).get("photo") as string | undefined;
+  await deleteDoc(ref);
+  if (photo) await deleteImage(photo);
 }
 
 // --- Images --------------------------------------------------------------
 
-// Prototype: inline the cropped image as a data URL. With Cloudinary this
-// POSTs the blob to the upload endpoint and returns `secure_url`.
-export function uploadImage(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(blob);
+async function adminFetch(method: "POST" | "DELETE", body?: unknown) {
+  const token = await auth().currentUser?.getIdToken();
+  const res = await fetch("/api/admin/images", {
+    method,
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: body === undefined ? undefined : JSON.stringify(body),
   });
+  if (!res.ok) throw new Error(`/api/admin/images ${method} → ${res.status}`);
+  return res;
+}
+
+// Uploads the cropped image straight to Cloudinary and returns its URL.
+export async function uploadImage(blob: Blob): Promise<string> {
+  const sig = (await (await adminFetch("POST")).json()) as {
+    cloudName: string;
+    apiKey: string;
+    folder: string;
+    timestamp: number;
+    signature: string;
+  };
+  const form = new FormData();
+  form.append("file", blob);
+  form.append("api_key", sig.apiKey);
+  form.append("folder", sig.folder);
+  form.append("timestamp", String(sig.timestamp));
+  form.append("signature", sig.signature);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${sig.cloudName}/image/upload`, {
+    method: "POST",
+    body: form,
+  });
+  if (!res.ok) throw new Error(`Cloudinary upload → ${res.status}`);
+  return ((await res.json()) as { secure_url: string }).secure_url;
+}
+
+// Best effort: the record change already succeeded, so a failed delete only
+// leaves an orphan file behind — log it instead of failing the action.
+export async function deleteImage(url: string) {
+  if (!url.startsWith("https://res.cloudinary.com/")) return; // e.g. old placeholders
+  try {
+    await adminFetch("DELETE", { url });
+  } catch (e) {
+    console.error("Falha ao apagar imagem antiga:", e);
+  }
 }

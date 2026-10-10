@@ -3,8 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Eye, EyeOff, Info, Loader2, LogIn } from "lucide-react";
-import { DEMO_LOGIN, signIn, useSession } from "@/lib/admin/store";
+import { Eye, EyeOff, Loader2, LogIn } from "lucide-react";
+import { signIn, useSession } from "@/lib/admin/store";
 import { Button, Field, Input } from "@/components/admin/ui";
 
 export default function LoginPage() {
@@ -86,15 +86,6 @@ export default function LoginPage() {
             Entrar
           </Button>
         </form>
-
-        {/* Prototype only — remove once Firebase Auth is wired in. */}
-        <div className="mt-4 flex gap-2 rounded-2xl bg-sky/10 p-3 text-xs text-navy/75">
-          <Info className="mt-0.5 h-4 w-4 shrink-0 text-sky" aria-hidden />
-          <p>
-            <strong>Protótipo.</strong> Use <code>{DEMO_LOGIN.email}</code> / <code>{DEMO_LOGIN.password}</code>.
-            Os dados ficam salvos só neste navegador.
-          </p>
-        </div>
       </div>
     </main>
   );

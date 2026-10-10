@@ -1,7 +1,5 @@
-// Data model for the admin area. Shapes mirror what will live in Firestore
-// (one document per pet / vakinha), so swapping the prototype store for the
-// real backend doesn't touch the forms.
-import { animals, campaigns, unsplash } from "@/lib/data";
+// Data model for the admin area: one Firestore document per pet / vakinha
+// (the document id is `id`, the rest of the fields are stored as-is).
 
 export type Species = "dog" | "cat";
 
@@ -75,30 +73,3 @@ export const newId = () =>
 // Local calendar date as YYYY-MM-DD (toISOString would shift to UTC).
 export const today = () => new Date().toLocaleDateString("sv-SE");
 export const formatDate = (ymd: string) => new Date(`${ymd}T12:00`).toLocaleDateString("pt-BR");
-
-// Seed the prototype with the site's current mock content.
-export const seedPets = (): Pet[] =>
-  animals.map((a, i) => ({
-    id: a.id,
-    name: a.name,
-    species: a.species,
-    sex: a.sex,
-    age: a.age,
-    size: a.size,
-    bio: a.bio,
-    photo: unsplash(a.photoId, 1200, 900),
-    createdAt: i,
-  }));
-
-export const seedVakinhas = (): Vakinha[] =>
-  campaigns.map((c, i) => ({
-    id: c.id,
-    title: c.title,
-    category: c.category,
-    description: c.description,
-    goal: c.goal,
-    photo: unsplash(c.photoId, 1000, 600),
-    closedAt: null,
-    donations: [{ id: newId(), amount: c.raised, date: today(), note: "Saldo anterior" }],
-    createdAt: i,
-  }));

@@ -1,0 +1,24 @@
+rules_version = '2';
+
+// Deploy with `npx firebase-tools deploy --only firestore:rules` (or paste into
+// Firebase console → Firestore Database → Rules and publish).
+// Keep the e-mail list in sync with ADMIN_EMAILS in .env.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email.lower() in ['admin@projetocaramelo.org.br'];
+    }
+
+    // Shown on the public site; only admins edit them.
+    match /pets/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /vakinhas/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
