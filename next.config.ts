@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "fastly.picsum.photos", pathname: "/**" },
     ],
   },
+  allowedDevOrigins: [
+    "192.168.1.17"
+  ]
 };
 
 export default nextConfig;
