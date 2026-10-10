@@ -5,15 +5,23 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { QRCodeSVG } from "qrcode.react";
 import { Check, Copy, X } from "lucide-react";
-import { brl, unsplash, type Campaign } from "@/lib/data";
+import { brl } from "@/lib/data";
 import { site } from "@/lib/site";
 
-// Pix QR code + copyable key for a single "vakinha".
+// What a donation goes to: a vakinha (photo + progress) or the project itself.
+export interface PixTarget {
+  title: string;
+  photo?: string;
+  raised?: number;
+  goal?: number;
+}
+
+// Pix QR code + copyable key for a single "vakinha" or a general donation.
 export function CampaignModal({
   campaign,
   onClose,
 }: {
-  campaign: Campaign | null;
+  campaign: PixTarget | null;
   onClose: () => void;
 }) {
   const [copied, setCopied] = useState(false);
@@ -78,23 +86,22 @@ export function CampaignModal({
               <X className="h-5 w-5" />
             </button>
 
-            <div className="relative h-40">
-              <Image
-                src={unsplash(campaign.photoId, 600, 320)}
-                alt=""
-                fill
-                sizes="448px"
-                className="object-cover"
-              />
-            </div>
+            {campaign.photo && (
+              <div className="relative h-40">
+                <Image src={campaign.photo} alt="" fill sizes="448px" className="object-cover" />
+              </div>
+            )}
 
-            <div className="p-6 text-center">
+            {/* Without a photo, leave room for the close button. */}
+            <div className={`text-center ${campaign.photo ? "p-6" : "px-6 pb-6 pt-14"}`}>
               <p className="font-script text-2xl text-caramel">Apoie com Pix</p>
               <h3 className="font-display text-2xl font-bold text-navy">{campaign.title}</h3>
-              <p className="mt-1 text-sm text-navy/70">
-                <strong className="text-navy">{brl(campaign.raised)}</strong> arrecadados de{" "}
-                {brl(campaign.goal)}
-              </p>
+              {campaign.goal !== undefined && (
+                <p className="mt-1 text-sm text-navy/70">
+                  <strong className="text-navy">{brl(campaign.raised ?? 0)}</strong> arrecadados de{" "}
+                  {brl(campaign.goal)}
+                </p>
+              )}
 
               {/* TODO: replace with the campaign's real Pix "copia e cola"
                   (BR Code/EMV) payload. For now it encodes the Pix key. */}

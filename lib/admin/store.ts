@@ -4,6 +4,7 @@
 //   - signIn / signOut / useSession       → Firebase Auth (email + password)
 //   - useCollection / save / remove       → Firestore (one doc per pet / vakinha)
 //   - uploadImage / deleteImage           → Cloudinary, signed by /api/admin/images
+// Every save/remove also asks /api/admin/revalidate to refresh the public site.
 // Images are owned by their record: replacing a photo, closing a vakinha
 // (photo cleared) or deleting a record also deletes the old image.
 import { useSyncExternalStore } from "react";
@@ -129,6 +130,7 @@ export async function save<N extends Name>(name: N, item: Collections[N]) {
   const previous = (await getDoc(ref)).get("photo") as string | undefined;
   await setDoc(ref, data);
   if (previous && previous !== item.photo) await deleteImage(previous);
+  await refreshSite(name);
 }
 
 // Runs a save that follows a fresh upload. If the save fails, the new upload
@@ -148,24 +150,35 @@ export async function remove(name: Name, id: string) {
   const photo = (await getDoc(ref)).get("photo") as string | undefined;
   await deleteDoc(ref);
   if (photo) await deleteImage(photo);
+  await refreshSite(name);
+}
+
+// Best effort: tells the public site its cached copy of `name` is stale.
+// If it fails, the site still catches up when its cache expires (~5 min).
+async function refreshSite(name: Name) {
+  try {
+    await adminFetch("/api/admin/revalidate", "POST", { collection: name });
+  } catch (e) {
+    console.error("Falha ao atualizar o site:", e);
+  }
 }
 
 // --- Images --------------------------------------------------------------
 
-async function adminFetch(method: "POST" | "DELETE", body?: unknown) {
+async function adminFetch(path: string, method: "POST" | "DELETE", body?: unknown) {
   const token = await auth().currentUser?.getIdToken();
-  const res = await fetch("/api/admin/images", {
+  const res = await fetch(path, {
     method,
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`/api/admin/images ${method} → ${res.status}`);
+  if (!res.ok) throw new Error(`${path} ${method} → ${res.status}`);
   return res;
 }
 
 // Uploads the cropped image straight to Cloudinary and returns its URL.
 export async function uploadImage(blob: Blob): Promise<string> {
-  const sig = (await (await adminFetch("POST")).json()) as {
+  const sig = (await (await adminFetch("/api/admin/images", "POST")).json()) as {
     cloudName: string;
     apiKey: string;
     folder: string;
@@ -191,7 +204,7 @@ export async function uploadImage(blob: Blob): Promise<string> {
 export async function deleteImage(url: string) {
   if (!url.startsWith("https://res.cloudinary.com/")) return; // e.g. old placeholders
   try {
-    await adminFetch("DELETE", { url });
+    await adminFetch("/api/admin/images", "DELETE", { url });
   } catch (e) {
     console.error("Falha ao apagar imagem antiga:", e);
   }

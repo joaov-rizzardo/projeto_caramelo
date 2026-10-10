@@ -2,12 +2,15 @@
 
 import Image from "next/image";
 import { useCallback, useState } from "react";
-import { ArrowRight, PawPrint } from "lucide-react";
+import { ArrowRight, Heart, PawPrint } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { AnimalModal } from "./AnimalModal";
-import { animals, unsplash, type Animal } from "@/lib/data";
+import { HeartOutline } from "./ui/Doodles";
+import { InstagramIcon } from "./ui/BrandIcons";
+import type { Animal } from "@/lib/data";
+import { site } from "@/lib/site";
 
-export function AdoptionSection() {
+export function AdoptionSection({ animals }: { animals: Animal[] }) {
   const [selected, setSelected] = useState<Animal | null>(null);
   const close = useCallback(() => setSelected(null), []);
 
@@ -30,68 +33,121 @@ export function AdoptionSection() {
             </p>
           </Reveal>
           {/* TODO: point to the full adoption listing once it exists. */}
-          <a
-            href="#adocao"
-            className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-caramel px-5 py-2.5 text-sm font-bold text-caramel transition-colors hover:bg-caramel hover:text-white"
-          >
-            Ver todos os animais
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </a>
+          {animals.length > 0 && (
+            <a
+              href="#adocao"
+              className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-caramel px-5 py-2.5 text-sm font-bold text-caramel transition-colors hover:bg-caramel hover:text-white"
+            >
+              Ver todos os animais
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </a>
+          )}
         </div>
 
-        {/* Mobile: swipeable row with the next card peeking in; grid from sm up. */}
-        <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3 lg:grid-cols-5">
-          {animals.map((a, i) => (
-            <Reveal
-              as="li"
-              key={a.id}
-              delay={i * 0.05}
-              className="w-[72%] max-w-72 shrink-0 snap-start sm:w-auto sm:max-w-none"
-            >
-              <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-offwhite shadow-lg">
-                <div className="relative aspect-[4/3]">
-                  <Image
-                    src={unsplash(a.photoId, 480, 360)}
-                    alt={`Foto de ${a.name}`}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
-                    className="object-cover"
-                  />
-                  <span
-                    className={`absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold text-white shadow ${
-                      a.species === "dog" ? "bg-caramel" : "bg-sky"
-                    }`}
-                  >
-                    {a.species === "dog" ? "Cão" : "Gato"}
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col p-4">
-                  <h3 className="font-display text-xl font-bold text-navy">{a.name}</h3>
-                  <p className="mt-1 flex items-center gap-x-1 whitespace-nowrap text-[11px] text-navy/70">
-                    <PawPrint className="h-3.5 w-3.5 text-navy" aria-hidden />
-                    {a.sex}
-                    <span className="text-caramel">|</span>
-                    {a.age}
-                    <span className="text-caramel">|</span>
-                    {a.size}
-                  </p>
-                  <p className="mt-3 flex-1 text-sm leading-snug text-navy/85">{a.bio}</p>
-                  <button
-                    type="button"
-                    onClick={() => setSelected(a)}
-                    className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-caramel px-4 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
-                  >
-                    <PawPrint className="h-4 w-4" aria-hidden />
-                    Quero adotar
-                  </button>
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </ul>
+        {animals.length === 0 ? (
+          <NoAnimals />
+        ) : (
+          /* Mobile: swipeable row with the next card peeking in; grid from sm up. */
+          <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3 lg:grid-cols-5">
+            {animals.map((a, i) => (
+              <Reveal
+                as="li"
+                key={a.id}
+                delay={i * 0.05}
+                className="w-[72%] max-w-72 shrink-0 snap-start sm:w-auto sm:max-w-none"
+              >
+                <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-offwhite shadow-lg">
+                  <div className="relative aspect-[4/3]">
+                    <Image
+                      src={a.photo}
+                      alt={`Foto de ${a.name}`}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
+                      className="object-cover"
+                    />
+                    <span
+                      className={`absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold text-white shadow ${
+                        a.species === "dog" ? "bg-caramel" : "bg-sky"
+                      }`}
+                    >
+                      {a.species === "dog" ? "Cão" : "Gato"}
+                    </span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-4">
+                    <h3 className="font-display text-xl font-bold text-navy">{a.name}</h3>
+                    <p className="mt-1 flex items-center gap-x-1 whitespace-nowrap text-[11px] text-navy/70">
+                      <PawPrint className="h-3.5 w-3.5 text-navy" aria-hidden />
+                      {a.sex}
+                      <span className="text-caramel">|</span>
+                      {a.age}
+                      <span className="text-caramel">|</span>
+                      {a.size}
+                    </p>
+                    <p className="mt-3 flex-1 text-sm leading-snug text-navy/85">{a.bio}</p>
+                    <button
+                      type="button"
+                      onClick={() => setSelected(a)}
+                      className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-caramel px-4 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
+                    >
+                      <PawPrint className="h-4 w-4" aria-hidden />
+                      Quero adotar
+                    </button>
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </ul>
+        )}
       </div>
 
       <AnimalModal animal={selected} onClose={close} />
     </section>
+  );
+}
+
+// Shown when no pet is up for adoption right now.
+function NoAnimals() {
+  return (
+    <Reveal className="mt-10">
+      <div className="relative mx-auto max-w-2xl overflow-hidden rounded-[2rem] bg-offwhite px-6 py-10 text-center shadow-lg sm:px-12">
+        <HeartOutline className="absolute left-6 top-6 h-7 w-7 -rotate-12 text-caramel/40" />
+        <HeartOutline className="absolute bottom-8 right-8 h-5 w-5 rotate-12 text-sky/50" />
+
+        <div className="relative mx-auto grid h-24 w-24 place-items-center rounded-full bg-caramel/10">
+          <PawPrint className="h-11 w-11 text-caramel" strokeWidth={2.2} aria-hidden />
+          <span className="absolute -right-1 -top-1 grid h-9 w-9 place-items-center rounded-full bg-white shadow-md">
+            <Heart className="h-4 w-4 fill-caramel text-caramel" aria-hidden />
+          </span>
+        </div>
+
+        <p className="mt-5 font-script text-3xl text-caramel-600">Volte em breve!</p>
+        <h3 className="mt-1 font-display text-2xl font-bold text-navy sm:text-3xl">
+          Nenhum pet esperando por um lar agora
+        </h3>
+        <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-navy/75">
+          Todos os nossos peludos estão em boas mãos neste momento. Novos resgatados chegam o tempo
+          todo — acompanhe nossas redes para conhecer os próximos.
+        </p>
+
+        <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <a
+            href={site.socials.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-xl bg-caramel px-5 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
+          >
+            <InstagramIcon className="h-4 w-4" aria-hidden />
+            Seguir no Instagram
+          </a>
+          <a
+            href="#vakinhas"
+            className="inline-flex items-center gap-2 rounded-xl border-2 border-caramel px-5 py-2.5 text-sm font-bold text-caramel transition-colors hover:bg-caramel hover:text-white"
+          >
+            <Heart className="h-4 w-4" aria-hidden />
+            Ajudar de outro jeito
+          </a>
+        </div>
+      </div>
+    </Reveal>
   );
 }

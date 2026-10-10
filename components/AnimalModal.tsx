@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Check, Heart, X } from "lucide-react";
 import type { Animal } from "@/lib/data";
-import { unsplash } from "@/lib/data";
 
 export function AnimalModal({
   animal,
@@ -73,7 +72,7 @@ export function AnimalModal({
               {/* Photos */}
               <div className="relative aspect-[4/3] sm:aspect-auto">
                 <Image
-                  src={unsplash(animal.photoId, 700, 700)}
+                  src={animal.photo}
                   alt={`Foto de ${animal.name}`}
                   fill
                   sizes="(max-width: 640px) 100vw, 50vw"

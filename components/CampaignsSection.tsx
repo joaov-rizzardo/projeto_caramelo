@@ -2,14 +2,15 @@
 
 import Image from "next/image";
 import { useCallback, useState } from "react";
-import { Heart, PawPrint, QrCode } from "lucide-react";
+import { HandHeart, Heart, PawPrint, QrCode } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { SwingArrows } from "./ui/Doodles";
-import { CampaignModal } from "./CampaignModal";
-import { brl, campaigns, unsplash, type Campaign } from "@/lib/data";
+import { CampaignModal, type PixTarget } from "./CampaignModal";
+import { brl, type Campaign } from "@/lib/data";
+import { site } from "@/lib/site";
 
-export function CampaignsSection() {
-  const [selected, setSelected] = useState<Campaign | null>(null);
+export function CampaignsSection({ campaigns }: { campaigns: Campaign[] }) {
+  const [selected, setSelected] = useState<PixTarget | null>(null);
   const close = useCallback(() => setSelected(null), []);
 
   return (
@@ -52,66 +53,105 @@ export function CampaignsSection() {
           </div>
         </div>
 
-        {/* Mobile: swipeable row with the next card peeking in; grid from sm up. */}
-        <ul className="no-scrollbar -mx-5 mt-8 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
-          {campaigns.map((c, i) => {
-            const pct = Math.min(100, Math.round((c.raised / c.goal) * 100));
-            return (
-              <Reveal
-                as="li"
-                key={c.id}
-                delay={i * 0.06}
-                className="w-[82%] max-w-80 shrink-0 snap-start sm:w-auto sm:max-w-none"
-              >
-                <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-offwhite shadow-lg">
-                  <div className="relative h-36">
-                    <Image
-                      src={unsplash(c.photoId, 500, 300)}
-                      alt={`Foto do animal da campanha ${c.title}`}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover"
-                    />
-                    <span className="absolute right-3 top-3 rounded-full bg-caramel px-3 py-1 text-xs font-bold text-white shadow">
-                      {c.category}
-                    </span>
-                  </div>
-                  <div className="flex flex-1 flex-col p-4">
-                    <h3 className="font-display text-lg font-bold text-navy">{c.title}</h3>
-                    <p className="mt-1 flex-1 text-sm leading-snug text-navy/75">{c.description}</p>
-
-                    <div
-                      className="mt-4 h-2 overflow-hidden rounded-full bg-navy/10"
-                      role="progressbar"
-                      aria-valuenow={pct}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      aria-label={`${pct}% da meta arrecadada`}
-                    >
-                      <div className="h-full rounded-full bg-caramel" style={{ width: `${pct}%` }} />
+        {campaigns.length === 0 ? (
+          <NoCampaigns onDonate={() => setSelected({ title: site.name })} />
+        ) : (
+          /* Mobile: swipeable row with the next card peeking in; grid from sm up. */
+          <ul className="no-scrollbar -mx-5 mt-8 flex snap-x snap-mandatory scroll-px-5 gap-4 overflow-x-auto px-5 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
+            {campaigns.map((c, i) => {
+              const pct = Math.min(100, Math.round((c.raised / c.goal) * 100));
+              return (
+                <Reveal
+                  as="li"
+                  key={c.id}
+                  delay={i * 0.06}
+                  className="w-[82%] max-w-80 shrink-0 snap-start sm:w-auto sm:max-w-none"
+                >
+                  <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-offwhite shadow-lg">
+                    <div className="relative h-36">
+                      <Image
+                        src={c.photo}
+                        alt={`Foto do animal da campanha ${c.title}`}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover"
+                      />
+                      <span className="absolute right-3 top-3 rounded-full bg-caramel px-3 py-1 text-xs font-bold text-white shadow">
+                        {c.category}
+                      </span>
                     </div>
-                    <p className="mt-2 text-xs text-navy/70">
-                      <strong className="text-sm text-navy">{brl(c.raised)}</strong> arrecadados de{" "}
-                      {brl(c.goal)}
-                    </p>
+                    <div className="flex flex-1 flex-col p-4">
+                      <h3 className="font-display text-lg font-bold text-navy">{c.title}</h3>
+                      <p className="mt-1 flex-1 text-sm leading-snug text-navy/75">{c.description}</p>
 
-                    <button
-                      type="button"
-                      onClick={() => setSelected(c)}
-                      className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-caramel px-4 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
-                    >
-                      <QrCode className="h-5 w-5" aria-hidden />
-                      Apoie com QR Code
-                    </button>
-                  </div>
-                </article>
-              </Reveal>
-            );
-          })}
-        </ul>
+                      <div
+                        className="mt-4 h-2 overflow-hidden rounded-full bg-navy/10"
+                        role="progressbar"
+                        aria-valuenow={pct}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-label={`${pct}% da meta arrecadada`}
+                      >
+                        <div className="h-full rounded-full bg-caramel" style={{ width: `${pct}%` }} />
+                      </div>
+                      <p className="mt-2 text-xs text-navy/70">
+                        <strong className="text-sm text-navy">{brl(c.raised)}</strong> arrecadados de{" "}
+                        {brl(c.goal)}
+                      </p>
+
+                      <button
+                        type="button"
+                        onClick={() => setSelected(c)}
+                        className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-caramel px-4 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
+                      >
+                        <QrCode className="h-5 w-5" aria-hidden />
+                        Apoie com QR Code
+                      </button>
+                    </div>
+                  </article>
+                </Reveal>
+              );
+            })}
+          </ul>
+        )}
       </div>
 
       <CampaignModal campaign={selected} onClose={close} />
     </section>
+  );
+}
+
+// Shown when there's no active vakinha: celebrates it and still offers a way
+// to give, since day-to-day costs (food, vaccines, neutering) never stop.
+function NoCampaigns({ onDonate }: { onDonate: () => void }) {
+  return (
+    <Reveal className="mt-8">
+      <div className="relative mx-auto max-w-3xl overflow-hidden rounded-3xl bg-white/5 px-6 py-10 text-center ring-1 ring-cream/15 sm:px-12">
+        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-caramel/15 blur-2xl" aria-hidden />
+        <div className="pointer-events-none absolute -bottom-12 -left-12 h-40 w-40 rounded-full bg-sky/15 blur-2xl" aria-hidden />
+
+        <div className="relative mx-auto grid h-20 w-20 place-items-center rounded-full bg-caramel shadow-lg shadow-caramel/30">
+          <HandHeart className="h-10 w-10 text-white" strokeWidth={2.2} aria-hidden />
+        </div>
+
+        <p className="relative mt-5 font-script text-3xl text-caramel">Boa notícia!</p>
+        <h3 className="relative mt-1 font-display text-2xl font-bold text-cream sm:text-3xl">
+          Nenhuma vakinha ativa no momento
+        </h3>
+        <p className="relative mx-auto mt-3 max-w-lg text-[15px] leading-relaxed text-cream/80">
+          Nossos resgatados estão com os tratamentos em dia. Mas a rotina do abrigo não para: ração,
+          vacinas e castrações continuam — e qualquer valor faz diferença.
+        </p>
+
+        <button
+          type="button"
+          onClick={onDonate}
+          className="relative mt-7 inline-flex items-center gap-2 rounded-xl bg-caramel px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
+        >
+          <QrCode className="h-5 w-5" aria-hidden />
+          Doar para o projeto
+        </button>
+      </div>
+    </Reveal>
   );
 }
