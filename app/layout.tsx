@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fredoka, Caveat, Nunito } from "next/font/google";
+import { Fredoka, Caveat, Nunito, Montserrat } from "next/font/google";
 import "./globals.css";
 
 // Display: chunky, rounded, playful headlines.
@@ -23,6 +23,13 @@ const nunito = Nunito({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+// Usada só no logo da Vex Software no rodapé.
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["600", "800"],
+});
+
 export const metadata: Metadata = {
   title: "Projeto Caramelo — Amor que transforma vidas",
   description:
@@ -43,7 +50,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${fredoka.variable} ${caveat.variable} ${nunito.variable} h-full`}
+      className={`${fredoka.variable} ${caveat.variable} ${nunito.variable} ${montserrat.variable} h-full`}
     >
       <body className="min-h-full flex flex-col bg-cream text-navy">
         {children}

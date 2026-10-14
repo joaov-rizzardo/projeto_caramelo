@@ -6,7 +6,7 @@ export const unsplash = (id: string, w = 800, h = 800) =>
 
 export const photos = {
   hero: "photo-1623387641168-d9803ddd3f35", // cat + puppy on the grass
-  about: "photo-1516734212186-a967f81ad0d7", // hand petting a golden dog
+  about: "photo-1562176566-e9afd27531d4", // smiling golden puppy
 } as const;
 
 export const brl = (value: number) => `R$ ${value.toLocaleString("pt-BR")}`;
@@ -16,8 +16,7 @@ export interface Campaign {
   id: string;
   title: string;
   category: string;
-  description: string;
-  raised: number;
+  description: string;  raised: number;
   goal: number;
   photo: string; // hosted image URL
 }

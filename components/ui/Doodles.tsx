@@ -29,11 +29,9 @@ export function HeartOutline(props: SVGProps<SVGSVGElement>) {
 }
 
 // Two short swinging strokes, like the ones framing "Cada doação salva vidas!".
-export function SwingArrows(props: SVGProps<SVGSVGElement>) {
+export function SwingArrow(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 120 40" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
-      <path d="M8 10c6 16 22 22 40 18" />
-      <path d="M40 22l8 6-8 6" />
+    <svg viewBox="76 0 40 40" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden {...props}>
       <path d="M112 4c-2 16-14 26-30 26" />
       <path d="M90 22l-8 8 9 4" />
     </svg>

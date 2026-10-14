@@ -6,7 +6,15 @@ import { AnimatePresence, motion } from "motion/react";
 import { QRCodeSVG } from "qrcode.react";
 import { Check, Copy, X } from "lucide-react";
 import { brl } from "@/lib/data";
+import { pixPayload } from "@/lib/pix";
 import { site } from "@/lib/site";
+
+// Same Pix for every donation on the site, so it's built once.
+const PIX_CODE = pixPayload({
+  key: site.pixKey,
+  name: site.pixName,
+  city: site.pixCity,
+});
 
 // What a donation goes to: a vakinha (photo + progress) or the project itself.
 export interface PixTarget {
@@ -14,6 +22,7 @@ export interface PixTarget {
   photo?: string;
   raised?: number;
   goal?: number;
+  description?: string;
 }
 
 // Pix QR code + copyable key for a single "vakinha" or a general donation.
@@ -24,14 +33,14 @@ export function CampaignModal({
   campaign: PixTarget | null;
   onClose: () => void;
 }) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<"key" | "code" | null>(null);
 
   // Reset local state whenever a different campaign is opened (adjusting
   // state during render instead of in an effect).
   const [shown, setShown] = useState(campaign);
   if (shown !== campaign) {
     setShown(campaign);
-    setCopied(false);
+    setCopied(null);
   }
 
   // Close on Escape + lock body scroll while open.
@@ -46,11 +55,11 @@ export function CampaignModal({
     };
   }, [campaign, onClose]);
 
-  async function copyKey() {
+  async function copy(what: "key" | "code") {
     try {
-      await navigator.clipboard.writeText(site.pixKey);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(what === "key" ? site.pixKey : PIX_CODE);
+      setCopied(what);
+      setTimeout(() => setCopied(null), 2000);
     } catch {
       // Clipboard blocked (e.g. insecure context) — the key stays selectable.
     }
@@ -86,57 +95,84 @@ export function CampaignModal({
               <X className="h-5 w-5" />
             </button>
 
+            {/* Hidden on phones so the QR code and Pix key fit without scrolling. */}
             {campaign.photo && (
-              <div className="relative h-40">
+              <div className="relative hidden h-40 sm:block">
                 <Image src={campaign.photo} alt="" fill sizes="448px" className="object-cover" />
               </div>
             )}
 
             {/* Without a photo, leave room for the close button. */}
-            <div className={`text-center ${campaign.photo ? "p-6" : "px-6 pb-6 pt-14"}`}>
-              <p className="font-script text-2xl text-caramel">Apoie com Pix</p>
-              <h3 className="font-display text-2xl font-bold text-navy">{campaign.title}</h3>
-              {campaign.goal !== undefined && (
-                <p className="mt-1 text-sm text-navy/70">
-                  <strong className="text-navy">{brl(campaign.raised ?? 0)}</strong> arrecadados de{" "}
-                  {brl(campaign.goal)}
-                </p>
-              )}
+            <div
+              className={`text-center ${campaign.photo ? "px-6 pb-5 pt-12 sm:p-6" : "px-6 pb-6 pt-14"}`}
+            >
+              <div>
+                <p className="font-script text-2xl text-caramel">Apoie com Pix</p>
+                <h3 className="font-display text-2xl font-bold text-navy">{campaign.title}</h3>
+                {campaign.goal !== undefined && (
+                  <>
+                    <p className="mt-1 text-sm text-navy/70">
+                      <strong className="text-navy">{brl(campaign.raised ?? 0)}</strong> arrecadados de{" "}
+                      {brl(campaign.goal)}
+                    </p>
+                    <p className="mt-1 text-[10px] leading-tight text-red-600">
+                      *Valores arrecadados atualizados a cada 24h
+                    </p>
+                  </>
+                )}
 
-              {/* TODO: replace with the campaign's real Pix "copia e cola"
-                  (BR Code/EMV) payload. For now it encodes the Pix key. */}
-              <div className="mx-auto mt-5 w-fit rounded-2xl bg-white p-3 shadow-sm ring-1 ring-navy/10">
-                <QRCodeSVG
-                  value={site.pixKey}
-                  size={180}
-                  fgColor="#12294a"
-                  level="M"
-                  aria-label={`QR Code Pix para ${campaign.title}`}
-                />
+                {campaign.description && (
+                  <p className="mt-3 whitespace-pre-line text-sm sm:mt-4 leading-relaxed text-navy/85">
+                    {campaign.description}
+                  </p>
+                )}
               </div>
 
-              <p className="mt-5 text-xs font-bold uppercase tracking-wide text-navy/60">
-                Chave Pix ({site.pixKeyType})
-              </p>
-              <p className="mt-1 break-all font-display text-lg font-semibold text-navy">
-                {site.pixKey}
-              </p>
+              <div className="mt-4 sm:mt-5">
+                <div className="mx-auto w-fit rounded-2xl bg-white p-3 shadow-sm ring-1 ring-navy/10">
+                  <QRCodeSVG
+                    value={PIX_CODE}
+                    size={180}
+                    fgColor="#12294a"
+                    level="M"
+                    className="h-[150px] w-[150px] sm:h-[180px] sm:w-[180px]"
+                    aria-label={`QR Code Pix para ${campaign.title}`}
+                  />
+                </div>
 
-              <button
-                type="button"
-                onClick={copyKey}
-                className="mt-4 inline-flex items-center gap-2 rounded-xl bg-caramel px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
-              >
-                {copied ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
-                {copied ? "Copiado!" : "Copiar chave Pix"}
-              </button>
-              <span className="sr-only" role="status" aria-live="polite">
-                {copied ? "Chave Pix copiada" : ""}
-              </span>
+                <p className="mt-4 text-xs font-bold uppercase sm:mt-5 tracking-wide text-navy/60">
+                  Chave Pix ({site.pixKeyType})
+                </p>
+                <p className="mt-1 break-all font-display text-lg font-semibold text-navy">
+                  {site.pixKeyLabel}
+                </p>
 
-              <p className="mt-4 text-xs text-navy/60">
-                Qualquer valor ajuda — você escolhe quanto doar no app do seu banco.
-              </p>
+                <div className="mt-3 flex flex-wrap justify-center gap-2 sm:mt-4">
+                  <button
+                    type="button"
+                    onClick={() => copy("key")}
+                    className="inline-flex items-center gap-2 rounded-xl bg-caramel px-4 py-3 text-sm font-bold text-white shadow-md sm:px-5 transition-all hover:bg-caramel-600 active:scale-95"
+                  >
+                    {copied === "key" ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
+                    {copied === "key" ? "Copiado!" : "Copiar chave Pix"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => copy("code")}
+                    className="inline-flex items-center gap-2 rounded-xl border-2 border-caramel px-4 py-3 sm:px-5 text-sm font-bold text-caramel-600 transition-all hover:bg-caramel/10 active:scale-95"
+                  >
+                    {copied === "code" ? <Check className="h-4 w-4" aria-hidden /> : <Copy className="h-4 w-4" aria-hidden />}
+                    {copied === "code" ? "Copiado!" : "Pix copia e cola"}
+                  </button>
+                </div>
+                <span className="sr-only" role="status" aria-live="polite">
+                  {copied === "key" ? "Chave Pix copiada" : copied === "code" ? "Código Pix copiado" : ""}
+                </span>
+
+                <p className="mt-3 text-xs text-navy/60 sm:mt-4">
+                  Qualquer valor ajuda — você escolhe quanto doar no app do seu banco.
+                </p>
+              </div>
             </div>
           </motion.div>
         </motion.div>

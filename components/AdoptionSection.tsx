@@ -17,19 +17,17 @@ export function AdoptionSection({ animals }: { animals: Animal[] }) {
   return (
     <section id="adocao" className="paw-texture relative bg-cream py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div className="flex flex-col justify-between gap-6 sm:px-8 md:flex-row md:items-end min-[1344px]:px-2">
           <Reveal>
             <p className="flex items-center gap-2 font-display text-xl font-semibold uppercase text-caramel">
               <PawPrint className="h-7 w-7" strokeWidth={2.4} aria-hidden />
               Adoção
             </p>
             <h2 className="mt-1 font-display text-3xl font-bold text-navy sm:text-4xl">
-              Encontre seu novo melhor amigo
+              Adote seu novo melhor amigo
             </h2>
             <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-navy/85">
-              Dê uma chance a um pet que só precisa de amor, cuidado e um lar.
-              <br className="hidden sm:block" /> Cada adoção transforma duas
-              vidas: a do animal e a sua!
+              Dê uma chance a um pet que ainda não conhece o amor de um lar.
             </p>
           </Reveal>
           {/* TODO: point to the full adoption listing once it exists. */}
@@ -47,22 +45,23 @@ export function AdoptionSection({ animals }: { animals: Animal[] }) {
         {animals.length === 0 ? (
           <NoAnimals />
         ) : (
-          /* Mobile: swipeable row with the next card peeking in; grid from sm up. */
-          <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-4 gap-4 overflow-x-auto px-4 pb-4 sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 md:grid-cols-3 lg:grid-cols-5">
+          /* Mobile: swipeable row with the next card peeking in; grid from sm up.
+             Insets mirror the vakinhas panel padding so both card rows match in size. */
+          <ul className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-px-8 gap-4 overflow-x-auto px-8 pb-4 sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:pb-0 lg:grid-cols-4 min-[1344px]:px-2">
             {animals.map((a, i) => (
               <Reveal
                 as="li"
                 key={a.id}
                 delay={i * 0.05}
-                className="w-[72%] max-w-72 shrink-0 snap-start sm:w-auto sm:max-w-none"
+                className="w-[82%] max-w-80 shrink-0 snap-start sm:w-auto sm:max-w-none"
               >
                 <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-offwhite shadow-lg">
-                  <div className="relative aspect-[4/3]">
+                  <div className="relative aspect-[5/3]">
                     <Image
                       src={a.photo}
                       alt={`Foto de ${a.name}`}
                       fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 20vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="object-cover"
                     />
                     <span
@@ -140,7 +139,7 @@ function NoAnimals() {
             Seguir no Instagram
           </a>
           <a
-            href="#vakinhas"
+            href="#vaquinhas"
             className="inline-flex items-center gap-2 rounded-xl border-2 border-caramel px-5 py-2.5 text-sm font-bold text-caramel transition-colors hover:bg-caramel hover:text-white"
           >
             <Heart className="h-4 w-4" aria-hidden />

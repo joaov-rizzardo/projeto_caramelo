@@ -1,10 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Check, Heart, X } from "lucide-react";
+import { Heart, X } from "lucide-react";
 import type { Animal } from "@/lib/data";
+import { site } from "@/lib/site";
 
 export function AnimalModal({
   animal,
@@ -13,16 +14,6 @@ export function AnimalModal({
   animal: Animal | null;
   onClose: () => void;
 }) {
-  const [sent, setSent] = useState(false);
-
-  // Reset local state whenever a different animal is opened (adjusting
-  // state during render instead of in an effect).
-  const [shown, setShown] = useState(animal);
-  if (shown !== animal) {
-    setShown(animal);
-    setSent(false);
-  }
-
   // Close on Escape + lock body scroll while open.
   useEffect(() => {
     if (!animal) return;
@@ -70,7 +61,7 @@ export function AnimalModal({
 
             <div className="grid gap-0 sm:grid-cols-2">
               {/* Photos */}
-              <div className="relative aspect-[4/3] sm:aspect-auto">
+              <div className="relative aspect-[5/3] sm:aspect-auto">
                 <Image
                   src={animal.photo}
                   alt={`Foto de ${animal.name}`}
@@ -80,7 +71,7 @@ export function AnimalModal({
                 />
               </div>
 
-              {/* Details + form */}
+              {/* Details + adoption CTA */}
               <div className="p-6">
                 <p className="font-script text-2xl text-caramel-600">
                   Prazer, eu sou
@@ -96,67 +87,18 @@ export function AnimalModal({
                   {animal.bio}
                 </p>
 
-                {/* Adoption interest form */}
-                <AnimatePresence mode="wait">
-                  {sent ? (
-                    <motion.div
-                      key="sent"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="mt-6 flex items-center gap-3 rounded-2xl bg-leaf/15 p-4"
-                    >
-                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-leaf text-white">
-                        <Check className="h-5 w-5" />
-                      </span>
-                      <p className="text-sm font-semibold text-navy">
-                        Recebemos seu interesse em adotar {animal.name}! Nossa equipe
-                        vai entrar em contato em breve. 💛
-                      </p>
-                    </motion.div>
-                  ) : (
-                    <motion.form
-                      key="form"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        // TODO: wire to the NGO's real adoption CRM / e-mail.
-                        setSent(true);
-                      }}
-                      className="mt-6 space-y-3"
-                    >
-                      <label className="block">
-                        <span className="text-xs font-bold uppercase tracking-wide text-navy/60">
-                          Seu nome
-                        </span>
-                        <input
-                          required
-                          type="text"
-                          autoComplete="name"
-                          className="mt-1 w-full rounded-xl border-2 border-navy/10 bg-white px-3 py-2 text-sm text-navy outline-none focus:border-caramel"
-                        />
-                      </label>
-                      <label className="block">
-                        <span className="text-xs font-bold uppercase tracking-wide text-navy/60">
-                          E-mail ou WhatsApp
-                        </span>
-                        <input
-                          required
-                          type="text"
-                          className="mt-1 w-full rounded-xl border-2 border-navy/10 bg-white px-3 py-2 text-sm text-navy outline-none focus:border-caramel"
-                        />
-                      </label>
-                      <button
-                        type="submit"
-                        className="flex w-full items-center justify-center gap-2 rounded-full bg-caramel px-5 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
-                      >
-                        <Heart className="h-4 w-4 fill-current" aria-hidden />
-                        Quero adotar {animal.name}
-                      </button>
-                    </motion.form>
-                  )}
-                </AnimatePresence>
+                {/* Adoption interest → WhatsApp conversation with the NGO */}
+                <a
+                  href={`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(
+                    `Olá! Tenho interesse em adotar ${animal.name}. 💛`,
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-caramel px-5 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
+                >
+                  <Heart className="h-4 w-4 fill-current" aria-hidden />
+                  Quero adotar {animal.name}
+                </a>
               </div>
             </div>
           </motion.div>

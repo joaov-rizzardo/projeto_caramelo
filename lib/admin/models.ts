@@ -34,10 +34,11 @@ export interface Vakinha {
   createdAt: number;
 }
 
-// Output size of the cropper for each image slot. Pets show in 4:3 cards
-// (adoption section + mobile modal); vakinhas in wide 5:3 card headers.
+// Output size of the cropper for each image slot. Pets and vakinhas share the
+// same 5:3 card header on the site (and pets the mobile modal), so the crop
+// matches exactly what visitors see.
 export const imageSpecs = {
-  pet: { aspect: 4 / 3, width: 1200, height: 900, label: "4:3" },
+  pet: { aspect: 5 / 3, width: 1000, height: 600, label: "5:3" },
   vakinha: { aspect: 5 / 3, width: 1000, height: 600, label: "5:3" },
 } as const;
 

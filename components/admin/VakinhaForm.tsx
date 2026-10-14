@@ -53,7 +53,7 @@ export function VakinhaForm({
       if (!(e instanceof MissingPhoto)) console.error(e);
       setError(
         e instanceof MissingPhoto
-          ? "Adicione uma foto para a vakinha."
+          ? "Adicione uma foto para a vaquinha."
           : "Não foi possível salvar. Verifique sua conexão e tente novamente.",
       );
       setBusy(false);
@@ -126,7 +126,7 @@ export function VakinhaForm({
         </Button>
         <Button type="submit" disabled={busy}>
           {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          {vakinha ? "Salvar" : "Criar vakinha"}
+          {vakinha ? "Salvar" : "Criar vaquinha"}
         </Button>
       </div>
 
@@ -135,13 +135,13 @@ export function VakinhaForm({
           {confirm === null && (
             <>
               <p className="text-sm text-navy/70">
-                Campanha finalizada? Encerre a vakinha para tirá-la do site. A foto é removida e os
+                Campanha finalizada? Encerre a vaquinha para tirá-la do site. A foto é removida e os
                 dados ficam disponíveis só para consulta.
               </p>
               <div className="flex flex-wrap gap-2">
                 <Button variant="ghost" onClick={() => setConfirm("close")}>
                   <Archive className="h-4 w-4" aria-hidden />
-                  Encerrar vakinha
+                  Encerrar vaquinha
                 </Button>
                 <Button variant="danger" onClick={() => setConfirm("delete")}>
                   <Trash2 className="h-4 w-4" aria-hidden />

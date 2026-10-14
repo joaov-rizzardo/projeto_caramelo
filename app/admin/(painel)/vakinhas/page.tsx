@@ -32,7 +32,7 @@ export default function VakinhasPage() {
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold text-navy">Vakinhas</h1>
+          <h1 className="font-display text-3xl font-bold text-navy">Vaquinhas</h1>
           <p className="mt-1 text-sm text-navy/65">
             {vakinhas
               ? `${open.length} ${open.length === 1 ? "ativa" : "ativas"} · ${money(totalActive)} arrecadados`
@@ -41,7 +41,7 @@ export default function VakinhasPage() {
         </div>
         <Button onClick={() => setPanel({ kind: "new" })}>
           <Plus className="h-4 w-4" aria-hidden />
-          Nova vakinha
+          Nova vaquinha
         </Button>
       </div>
 
@@ -49,17 +49,17 @@ export default function VakinhasPage() {
         {vakinhas && open.length === 0 ? (
           <EmptyState
             icon={HeartHandshake}
-            title="Nenhuma vakinha ativa"
+            title="Nenhuma vaquinha ativa"
             action={
               <Button onClick={() => setPanel({ kind: "new" })}>
                 <Plus className="h-4 w-4" aria-hidden />
-                Criar vakinha
+                Criar vaquinha
               </Button>
             }
           >
             {closed.length > 0
               ? "Todas as campanhas foram encerradas. Crie uma nova quando surgir outra necessidade."
-              : "Crie uma vakinha para arrecadar fundos para tratamentos, cirurgias e outras necessidades."}
+              : "Crie uma vaquinha para arrecadar fundos para tratamentos, cirurgias e outras necessidades."}
           </EmptyState>
         ) : (
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -108,7 +108,7 @@ export default function VakinhasPage() {
 
       <Dialog
         open={panel?.kind === "new" || panel?.kind === "edit"}
-        title={panel?.kind === "new" ? "Nova vakinha" : "Editar vakinha"}
+        title={panel?.kind === "new" ? "Nova vaquinha" : "Editar vaquinha"}
         onClose={close}
         wide
       >
@@ -126,7 +126,7 @@ export default function VakinhasPage() {
         {panel?.kind === "donations" && current && <VakinhaDonations vakinha={current} />}
       </Dialog>
 
-      <Dialog open={panel?.kind === "view"} title="Vakinha encerrada" onClose={close}>
+      <Dialog open={panel?.kind === "view"} title="Vaquinha encerrada" onClose={close}>
         {panel?.kind === "view" && current && <ClosedVakinha vakinha={current} onDone={close} />}
       </Dialog>
     </>
@@ -180,7 +180,7 @@ function VakinhaCard({
           </Button>
           <Button variant="ghost" onClick={onEdit}>
             <Pencil className="h-4 w-4" aria-hidden />
-            Editar vakinha
+            Editar vaquinha
           </Button>
         </div>
       </div>

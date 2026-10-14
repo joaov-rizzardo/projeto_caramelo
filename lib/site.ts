@@ -6,21 +6,25 @@ export const site = {
   tagline: "Quem ama cuida",
   // TODO: replace with the NGO's real contact details before launch.
   email: "contato@projetocaramelo.org.br",
+  // WhatsApp used by the "Quero adotar" button: digits only, with country
+  // and area code (e.g. 5511999999999).
+  whatsapp: "5512996025508",
   socials: {
-    instagram: "https://instagram.com",
-    facebook: "https://facebook.com",
-    youtube: "https://youtube.com",
+    instagram: "https://instagram.com/projeto_caramelo_?vrfl=a3M2Y250eTRsb3Jw",
+    facebook: "https://www.facebook.com/share/1Ga41xFdgG/",
   },
-  // Real Pix key goes here — the QR code modal displays and copies it.
-  pixKey: "contato@projetocaramelo.org.br", // TODO: replace with real Pix key
-  pixKeyType: "E-mail",
+  // Pix used by every donation QR code on the site (vakinhas and general
+  // donations). The key must be in the official format (+55 for phones).
+  pixKey: "+5512996025508",
+  pixKeyLabel: "(12) 99602-5508",
+  pixKeyType: "Celular",
+  pixName: "Projeto Caramelo",
+  pixCity: "Cachoeira Paulista",
 } as const;
 
 export const navLinks = [
   { href: "#inicio", label: "Início" },
   { href: "#adocao", label: "Adoção" },
-  { href: "#vakinhas", label: "Vakinhas" },
+  { href: "#vaquinhas", label: "Vaquinhas" },
   { href: "#sobre", label: "Sobre nós" },
-  { href: "#noticias", label: "Notícias" },
-  { href: "#contato", label: "Contato" },
 ] as const;

@@ -131,7 +131,7 @@ export function ClosedVakinha({ vakinha, onDone }: { vakinha: Vakinha; onDone: (
       <div className="flex flex-wrap items-center gap-2 border-t border-navy/10 pt-4">
         {confirmDelete ? (
           <span className="flex flex-wrap items-center gap-2 text-sm text-navy/70">
-            Excluir o registro desta vakinha?
+            Excluir o registro desta vaquinha?
             <Button
               variant="danger"
               onClick={async () => {

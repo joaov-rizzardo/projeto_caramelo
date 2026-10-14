@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import Image from "next/image";
 import { Heart, House, PawPrint, Users } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
@@ -30,24 +31,27 @@ export function Hero() {
             </span>
           </h1>
           <p className="mt-6 max-w-lg text-lg leading-relaxed text-navy/85">
-            O Projeto Caramelo é uma ONG que atua no resgate, acolhimento e
-            cuidado de cães e gatos em situação de abandono, promovendo adoção
-            responsável e conscientização na nossa cidade.
+            O Projeto Caramelo se dedica ao resgate e acolhimento de cães e
+            gatos abandonados, oferecendo cuidados, castração e a oportunidade
+            de um novo lar por meio da adoção responsável, além de promover a
+            conscientização e o bem-estar animal em nossa cidade Cachoeira
+            Paulista.
           </p>
 
-          <ul className="mt-9 grid max-w-xl grid-cols-2 gap-y-6 sm:grid-cols-4">
+          {/* justify-between keeps the gap on both sides of every divider equal */}
+          <ul className="mb-2 mt-9 flex max-w-xl justify-between lg:mb-0">
             {pillars.map(({ icon: Icon, label }, i) => (
-              <li
-                key={label[0]}
-                className={`sm:border-navy/15 sm:px-4 sm:first:pl-0 ${i > 0 ? "sm:border-l" : ""}`}
-              >
-                <Icon className="h-9 w-9 text-caramel" strokeWidth={2.2} aria-hidden />
-                <p className="mt-3 text-sm font-medium leading-snug text-navy">
-                  {label[0]}
-                  <br />
-                  {label[1]}
-                </p>
-              </li>
+              <Fragment key={label[0]}>
+                {i > 0 && <li aria-hidden className="w-px self-stretch bg-navy/15" />}
+                <li className="whitespace-nowrap">
+                  <Icon className="h-7 w-7 text-caramel sm:h-9 sm:w-9" strokeWidth={2.2} aria-hidden />
+                  <p className="mt-2 text-[10px] font-medium leading-snug text-navy min-[360px]:text-[11px] min-[400px]:text-xs sm:mt-3 sm:text-sm">
+                    {label[0]}
+                    <br />
+                    {label[1]}
+                  </p>
+                </li>
+              </Fragment>
             ))}
           </ul>
         </Reveal>
@@ -92,7 +96,7 @@ export function Hero() {
             </p>
             <div className="mr-10 flex items-center gap-1">
               <HeartOutline className="h-6 w-6 text-caramel" />
-              <CurvedArrow className="h-10 w-16 -scale-x-100 text-caramel" />
+              <CurvedArrow className="h-10 w-16 text-caramel" />
             </div>
           </div>
         </Reveal>

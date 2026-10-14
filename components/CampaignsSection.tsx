@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useCallback, useState } from "react";
 import { HandHeart, Heart, PawPrint, QrCode } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
-import { SwingArrows } from "./ui/Doodles";
+import { SwingArrow } from "./ui/Doodles";
 import { CampaignModal, type PixTarget } from "./CampaignModal";
 import { brl, type Campaign } from "@/lib/data";
 import { site } from "@/lib/site";
@@ -14,7 +14,7 @@ export function CampaignsSection({ campaigns }: { campaigns: Campaign[] }) {
   const close = useCallback(() => setSelected(null), []);
 
   return (
-    <section id="vakinhas" className="relative bg-cream-soft px-3 pb-10 pt-6 sm:px-6 sm:pt-10">
+    <section id="vaquinhas" className="relative bg-cream-soft px-3 pb-10 pt-6 sm:px-6 sm:pt-10">
       {/* Orange + navy waves peeking out behind the panel */}
       <div className="absolute inset-x-0 bottom-0 top-[calc(100%-9rem)] overflow-hidden sm:top-1/3" aria-hidden>
         <svg viewBox="0 0 1440 400" preserveAspectRatio="none" className="h-full w-full">
@@ -26,17 +26,17 @@ export function CampaignsSection({ campaigns }: { campaigns: Campaign[] }) {
       <div className="relative mx-auto max-w-7xl rounded-[2rem] bg-navy px-5 py-10 shadow-2xl sm:px-8 lg:px-10">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-start">
           <Reveal className="max-w-xl">
-            <p className="flex items-center gap-2 font-display text-sm font-semibold uppercase tracking-wide text-caramel">
+            <p className="flex items-center gap-2 font-display text-xl font-semibold uppercase text-caramel [font-kerning:none]">
               <Heart className="h-7 w-7" strokeWidth={2.4} aria-hidden />
-              Vakinhas ativas
+              Vaquinhas ativas
             </p>
             <h2 className="mt-1 font-display text-3xl font-bold text-cream sm:text-4xl">
-              Juntos podemos <span className="text-caramel">fazer a diferença</span>
+              Cada doação <span className="text-caramel">nos ajuda a continuar</span>
             </h2>
             <p className="mt-3 text-[15px] leading-relaxed text-cream/85">
-              Conheça as vakinhas ativas do Projeto Caramelo. São campanhas para
-              custear tratamentos, cirurgias, alimentação e outras necessidades
-              urgentes dos nossos resgatados.
+              Conheça nossas campanhas de arrecadação e ajude a custear
+              tratamentos, cirurgias, alimentação e cuidados essenciais para
+              nossos resgatados.
             </p>
           </Reveal>
 
@@ -49,7 +49,7 @@ export function CampaignsSection({ campaigns }: { campaigns: Campaign[] }) {
                 salva vidas!
               </span>
             </p>
-            <SwingArrows className="mt-1 h-10 w-32 text-caramel" />
+            <SwingArrow className="mt-1 ml-[88px] h-10 w-10 text-caramel" />
           </div>
         </div>
 
@@ -68,7 +68,7 @@ export function CampaignsSection({ campaigns }: { campaigns: Campaign[] }) {
                   className="w-[82%] max-w-80 shrink-0 snap-start sm:w-auto sm:max-w-none"
                 >
                   <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-offwhite shadow-lg">
-                    <div className="relative h-36">
+                    <div className="relative aspect-[5/3]">
                       <Image
                         src={c.photo}
                         alt={`Foto do animal da campanha ${c.title}`}
@@ -98,11 +98,14 @@ export function CampaignsSection({ campaigns }: { campaigns: Campaign[] }) {
                         <strong className="text-sm text-navy">{brl(c.raised)}</strong> arrecadados de{" "}
                         {brl(c.goal)}
                       </p>
+                      <p className="mt-3 whitespace-nowrap text-[9px] leading-tight tracking-tight text-red-600 min-[360px]:text-[10px] min-[360px]:tracking-normal sm:whitespace-normal">
+                        *Valores arrecadados atualizados a cada 24h
+                      </p>
 
                       <button
                         type="button"
                         onClick={() => setSelected(c)}
-                        className="mt-4 flex items-center justify-center gap-2 rounded-xl bg-caramel px-4 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
+                        className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-caramel px-4 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
                       >
                         <QrCode className="h-5 w-5" aria-hidden />
                         Apoie com QR Code
@@ -136,7 +139,7 @@ function NoCampaigns({ onDonate }: { onDonate: () => void }) {
 
         <p className="relative mt-5 font-script text-3xl text-caramel">Boa notícia!</p>
         <h3 className="relative mt-1 font-display text-2xl font-bold text-cream sm:text-3xl">
-          Nenhuma vakinha ativa no momento
+          Nenhuma vaquinha ativa no momento
         </h3>
         <p className="relative mx-auto mt-3 max-w-lg text-[15px] leading-relaxed text-cream/80">
           Nossos resgatados estão com os tratamentos em dia. Mas a rotina do abrigo não para: ração,

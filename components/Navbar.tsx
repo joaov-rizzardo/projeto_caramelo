@@ -83,7 +83,7 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <a
-            href="#vakinhas"
+            href="#vaquinhas"
             className="hidden items-center gap-2 rounded-xl bg-caramel px-6 py-3 font-display text-base font-semibold text-white shadow-md transition-all hover:bg-caramel-600 hover:shadow-lg active:scale-95 sm:inline-flex"
           >
             <Heart className="h-5 w-5" strokeWidth={2.6} aria-hidden />
@@ -129,7 +129,7 @@ export function Navbar() {
               ))}
             </ul>
             <a
-              href="#vakinhas"
+              href="#vaquinhas"
               onClick={() => setOpen(false)}
               className="mt-2 flex items-center justify-center gap-2 rounded-2xl bg-caramel px-5 py-3.5 font-display text-base font-semibold text-white shadow-md active:scale-95"
             >

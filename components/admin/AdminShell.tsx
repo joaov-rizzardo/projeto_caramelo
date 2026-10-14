@@ -9,7 +9,7 @@ import { signOut, useSession } from "@/lib/admin/store";
 
 const tabs = [
   { href: "/admin/pets", label: "Pets para adoção", icon: PawPrint },
-  { href: "/admin/vakinhas", label: "Vakinhas", icon: HeartHandshake },
+  { href: "/admin/vakinhas", label: "Vaquinhas", icon: HeartHandshake },
 ];
 
 // Auth gate + chrome for every signed-in admin screen.
