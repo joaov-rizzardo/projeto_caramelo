@@ -23,8 +23,9 @@ export const site = {
 } as const;
 
 export const navLinks = [
+  // Same order as the sections on the page (app/page.tsx).
   { href: "#inicio", label: "Início" },
-  { href: "#adocao", label: "Adoção" },
-  { href: "#vaquinhas", label: "Vaquinhas" },
   { href: "#sobre", label: "Sobre nós" },
+  { href: "#vaquinhas", label: "Vaquinhas" },
+  { href: "#adocao", label: "Adoção" },
 ] as const;
