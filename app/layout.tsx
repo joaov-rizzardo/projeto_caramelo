@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Fredoka, Caveat, Nunito, Montserrat } from "next/font/google";
 import "./globals.css";
+import { siteUrl } from "@/lib/env";
+import { site } from "@/lib/site";
 
 // Display: chunky, rounded, playful headlines.
 const fredoka = Fredoka({
@@ -30,15 +32,28 @@ const montserrat = Montserrat({
   weight: ["600", "800"],
 });
 
+const title = "Projeto Caramelo — Resgate e adoção de cães e gatos em Cachoeira Paulista";
+const description =
+  "Projeto independente de voluntários que resgata, cuida e encontra lares para cães e gatos abandonados em Cachoeira Paulista (SP). Adote um pet ou apoie nossas vaquinhas via Pix.";
+
 export const metadata: Metadata = {
-  title: "Projeto Caramelo — Amor que transforma vidas",
-  description:
-    "ONG que atua no resgate, acolhimento e cuidado de cães e gatos em situação de abandono, promovendo adoção responsável e conscientização.",
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  applicationName: site.name,
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "Projeto Caramelo — Amor que transforma vidas",
-    description:
-      "Resgatamos, cuidamos e encontramos lares para animais. Cada focinho merece um lar.",
+    title,
+    description,
+    url: "/",
+    siteName: site.name,
+    locale: "pt_BR",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
   },
 };
 

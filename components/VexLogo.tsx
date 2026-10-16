@@ -145,10 +145,13 @@ export function VexLogo() {
   useEffect(() => {
     const familia = getComputedStyle(document.documentElement).getPropertyValue("--font-montserrat").trim() || "sans-serif";
     let ativo = true;
-    Promise.all([
+    // allSettled: a face that fails to load (e.g. the "Montserrat Fallback"
+    // built on local(Arial), on systems without Arial) must not leave an
+    // unhandled rejection — the canvas is drawn with whatever loaded.
+    Promise.allSettled([
       document.fonts.load(`800 ${FONTE_VEX}px ${familia}`),
       document.fonts.load(`600 ${FONTE_SOFTWARE}px ${familia}`),
-    ]).finally(() => {
+    ]).then(() => {
       if (!ativo) return;
       preparar(familia);
       desenhar(-1);

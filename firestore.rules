@@ -16,9 +16,17 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Public part of a vakinha (with the `raised` total). Donations never go
+    // here: they'd be readable by anyone.
     match /vakinhas/{id} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update: if isAdmin() && !('donations' in request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Donation ledger of each vakinha (same id); admin only.
+    match /vakinhaDonations/{id} {
+      allow read, write: if isAdmin();
     }
   }
 }

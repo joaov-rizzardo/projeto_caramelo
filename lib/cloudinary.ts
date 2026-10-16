@@ -1,9 +1,9 @@
 import "server-only";
 import { createHash } from "node:crypto";
+import { env } from "@/lib/env";
 
-const cloudName = process.env.CLOUDINARY_CLOUD_NAME!;
-const apiKey = process.env.CLOUDINARY_API_KEY!;
-const apiSecret = process.env.CLOUDINARY_API_SECRET!;
+const cloudName = () => env("CLOUDINARY_CLOUD_NAME");
+const apiKey = () => env("CLOUDINARY_API_KEY");
 
 // Every admin upload lands here; deletes are refused outside of it so a
 // crafted request can't wipe unrelated assets of the account.
@@ -15,19 +15,25 @@ function sign(params: Record<string, string | number>) {
     .sort()
     .map((k) => `${k}=${params[k]}`)
     .join("&");
-  return createHash("sha1").update(payload + apiSecret).digest("hex");
+  return createHash("sha1").update(payload + env("CLOUDINARY_API_SECRET")).digest("hex");
 }
 
 // Parameters the browser sends along with the file to upload it directly.
+// They're all covered by the signature, so the browser can't change them:
+// uploads only land in UPLOAD_FOLDER and only as the cropper's output formats.
 export function signUpload() {
-  const params = { folder: UPLOAD_FOLDER, timestamp: Math.round(Date.now() / 1000) };
-  return { ...params, cloudName, apiKey, signature: sign(params) };
+  const params = {
+    allowed_formats: "webp,jpg",
+    folder: UPLOAD_FOLDER,
+    timestamp: Math.round(Date.now() / 1000),
+  };
+  return { cloudName: cloudName(), params: { ...params, api_key: apiKey(), signature: sign(params) } };
 }
 
 // https://res.cloudinary.com/<cloud>/image/upload/[<transforms>/][v123/]<folder>/<name>.<ext>
 // → "<folder>/<name>". Null for anything that isn't one of our uploads.
 export function publicIdFromUrl(url: string) {
-  const prefix = `https://res.cloudinary.com/${cloudName}/image/upload/`;
+  const prefix = `https://res.cloudinary.com/${cloudName()}/image/upload/`;
   if (!url.startsWith(prefix)) return null;
   const path = url.slice(prefix.length).split(/[?#]/)[0];
   const start = path.indexOf(`${UPLOAD_FOLDER}/`);
@@ -40,10 +46,10 @@ export async function destroyImage(publicId: string) {
   const params = { invalidate: "true", public_id: publicId, timestamp: Math.round(Date.now() / 1000) };
   const body = new URLSearchParams({
     ...Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)])),
-    api_key: apiKey,
+    api_key: apiKey(),
     signature: sign(params),
   });
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`, {
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName()}/image/destroy`, {
     method: "POST",
     body,
   });

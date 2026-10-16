@@ -6,9 +6,11 @@ import Image from "next/image";
 export function Logo({
   className = "",
   tone = "navy",
+  priority = true,
 }: {
   className?: string;
   tone?: "navy" | "cream";
+  priority?: boolean; // off for copies below the fold (footer)
 }) {
   const firstColor = tone === "cream" ? "text-cream" : "text-navy";
   const tagColor = tone === "cream" ? "text-cream/80" : "text-navy";
@@ -20,7 +22,7 @@ export function Logo({
         alt=""
         width={900}
         height={742}
-        priority
+        priority={priority}
         className="h-16 w-auto shrink-0 transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-105 sm:h-[4.5rem]"
       />
       <span className="flex flex-col leading-none">

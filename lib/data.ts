@@ -1,12 +1,8 @@
-// Shared site data. Pets and vakinhas come from Firestore (lib/content.ts);
-// the Hero/About photos below are still Unsplash placeholders.
-// Helper builds a sized Unsplash URL from a stable photo id.
-export const unsplash = (id: string, w = 800, h = 800) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=75`;
-
+// Shared site data. Pets and vakinhas come from Firestore (lib/content.ts).
+// Hero/About photos live in public/images (originally from Unsplash).
 export const photos = {
-  hero: "photo-1623387641168-d9803ddd3f35", // cat + puppy on the grass
-  about: "photo-1562176566-e9afd27531d4", // smiling golden puppy
+  hero: "/images/hero.jpg", // cat + puppy on the grass
+  about: "/images/sobre.jpg", // smiling golden puppy
 } as const;
 
 export const brl = (value: number) => `R$ ${value.toLocaleString("pt-BR")}`;

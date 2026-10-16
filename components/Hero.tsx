@@ -4,7 +4,7 @@ import { Heart, House, PawPrint, Users } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { CurvedArrow, HeartOutline } from "./ui/Doodles";
 import { BlobClipPaths } from "./ui/BlobClipPaths";
-import { photos, unsplash } from "@/lib/data";
+import { photos } from "@/lib/data";
 
 const pillars = [
   { icon: PawPrint, label: ["Resgate", "e cuidado"] },
@@ -76,7 +76,7 @@ export function Hero() {
           <div className="drop-shadow-[0_24px_30px_rgba(18,41,74,0.3)]">
             <div className="relative aspect-[3/2] [clip-path:url(#hero-blob)]">
               <Image
-                src={unsplash(photos.hero, 1200, 800)}
+                src={photos.hero}
                 alt="Um cachorro e um gato deitados juntos na grama"
                 fill
                 priority

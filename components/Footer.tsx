@@ -16,7 +16,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-center gap-4 py-6 text-center md:grid-cols-3 md:gap-8 md:divide-x md:divide-cream/15 md:py-8 md:text-left">
           {/* zoom (not scale) so the layout box shrinks too */}
-          <Logo tone="cream" className="justify-center max-md:[zoom:0.65] md:justify-start" />
+          <Logo tone="cream" priority={false} className="justify-center max-md:[zoom:0.65] md:justify-start" />
 
           <div id="noticias" className="flex flex-col items-center gap-3 md:px-6">
             <p className="text-center font-script text-2xl leading-tight text-white">

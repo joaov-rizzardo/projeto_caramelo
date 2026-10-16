@@ -2,7 +2,7 @@ import Image from "next/image";
 import { PawPrint } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { HeartOutline, Swoosh } from "./ui/Doodles";
-import { photos, unsplash } from "@/lib/data";
+import { photos } from "@/lib/data";
 
 const pawTrail = [
   { x: 0, rotate: 20 },
@@ -76,7 +76,7 @@ export function About() {
             <div className="relative aspect-[4/3] bg-cream-deep p-2.5 [clip-path:url(#soft-blob)]">
               <div className="relative h-full w-full [clip-path:url(#soft-blob)]">
                 <Image
-                  src={unsplash(photos.about, 1200, 800)}
+                  src={photos.about}
                   alt="Filhote de cachorro dourado sorrindo com a língua de fora"
                   fill
                   sizes="(max-width: 1024px) 90vw, 25vw"
