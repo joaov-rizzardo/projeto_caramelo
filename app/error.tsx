@@ -13,7 +13,7 @@ export default function Error({ error, retry }: { error: unknown; retry: () => v
   return (
     <main className="paw-texture grid min-h-screen place-items-center bg-cream px-4 py-10 text-center">
       <div className="max-w-md">
-        <Image src="/logo-badge.png" alt="" width={900} height={742} priority className="mx-auto h-28 w-auto" />
+        <Image src="/logo-badge.png" alt="" width={600} height={495} priority className="mx-auto h-28 w-auto" />
         <p className="mt-4 font-script text-3xl text-caramel-600">Algo deu errado</p>
         <h1 className="mt-1 font-display text-3xl font-bold text-navy">Não conseguimos carregar a página</h1>
         <p className="mt-3 text-[15px] leading-relaxed text-navy/75">

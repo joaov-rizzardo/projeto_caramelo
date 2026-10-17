@@ -98,7 +98,7 @@ export function CampaignModal({
             {/* Hidden on phones so the QR code and Pix key fit without scrolling. */}
             {campaign.photo && (
               <div className="relative hidden h-40 sm:block">
-                <Image src={campaign.photo} alt="" fill sizes="448px" className="object-cover" />
+                <Image src={campaign.photo} alt={`Foto do animal da campanha ${campaign.title}`} fill sizes="448px" className="object-cover" />
               </div>
             )}
 

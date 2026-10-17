@@ -35,7 +35,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 border-b border-navy/10 bg-cream-soft/95 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:px-6">
           <Link href="/admin/pets" className="flex items-center gap-2">
-            <Image src="/logo-badge.png" alt="" width={900} height={742} className="h-10 w-auto" />
+            <Image src="/logo-badge.png" alt="" width={600} height={495} className="h-10 w-auto" />
             <span className="font-display text-lg font-bold leading-none text-navy">
               Gestão <span className="text-caramel">Caramelo</span>
             </span>

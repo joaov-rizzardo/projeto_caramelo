@@ -37,7 +37,7 @@ export default function LoginPage() {
     <main className="paw-texture grid min-h-screen place-items-center bg-cream px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col items-center text-center">
-          <Image src="/logo-badge.png" alt="" width={900} height={742} priority className="h-24 w-auto" />
+          <Image src="/logo-badge.png" alt="" width={600} height={495} priority className="h-24 w-auto" />
           <h1 className="mt-3 font-display text-3xl font-bold text-navy">
             Área de <span className="text-caramel">gestão</span>
           </h1>

@@ -20,8 +20,8 @@ export function Logo({
       <Image
         src="/logo-badge.png"
         alt=""
-        width={900}
-        height={742}
+        width={600}
+        height={495}
         priority={priority}
         className="h-16 w-auto shrink-0 transition-transform duration-300 group-hover:-rotate-3 group-hover:scale-105 sm:h-[4.5rem]"
       />

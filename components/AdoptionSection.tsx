@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useCallback, useState } from "react";
-import { ArrowRight, Heart, PawPrint } from "lucide-react";
+import { Heart, PawPrint } from "lucide-react";
 import { Reveal } from "./ui/Reveal";
 import { AnimalModal } from "./AnimalModal";
 import { HeartOutline } from "./ui/Doodles";
@@ -30,16 +30,6 @@ export function AdoptionSection({ animals }: { animals: Animal[] }) {
               Dê uma chance a um pet que ainda não conhece o amor de um lar.
             </p>
           </Reveal>
-          {/* TODO: point to the full adoption listing once it exists. */}
-          {animals.length > 0 && (
-            <a
-              href="#adocao"
-              className="inline-flex w-fit items-center gap-2 rounded-full border-2 border-caramel px-5 py-2.5 text-sm font-bold text-caramel transition-colors hover:bg-caramel hover:text-white"
-            >
-              Ver todos os animais
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </a>
-          )}
         </div>
 
         {animals.length === 0 ? (

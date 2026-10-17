@@ -44,6 +44,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
+    // AVIF first (smaller), WebP for browsers that don't support it.
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       // Photos uploaded from the admin area — only this account's uploads, so
       // the image optimizer can't be used as a proxy for anyone else's assets.
