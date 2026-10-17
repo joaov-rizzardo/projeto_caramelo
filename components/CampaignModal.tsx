@@ -9,12 +9,16 @@ import { brl } from "@/lib/data";
 import { pixPayload } from "@/lib/pix";
 import { site } from "@/lib/site";
 
-// Same Pix for every donation on the site, so it's built once.
-const PIX_CODE = pixPayload({
-  key: site.pixKey,
-  name: site.pixName,
-  city: site.pixCity,
-});
+// Same Pix key for every donation; the vakinha title goes in the description
+// so the project can tell which campaign each transfer was for.
+function pixCode(title: string) {
+  return pixPayload({
+    key: site.pixKey,
+    name: site.pixName,
+    city: site.pixCity,
+    description: title,
+  });
+}
 
 // What a donation goes to: a vakinha (photo + progress) or the project itself.
 export interface PixTarget {
@@ -55,9 +59,11 @@ export function CampaignModal({
     };
   }, [campaign, onClose]);
 
+  const code = campaign ? pixCode(campaign.title) : "";
+
   async function copy(what: "key" | "code") {
     try {
-      await navigator.clipboard.writeText(what === "key" ? site.pixKey : PIX_CODE);
+      await navigator.clipboard.writeText(what === "key" ? site.pixKey : code);
       setCopied(what);
       setTimeout(() => setCopied(null), 2000);
     } catch {
@@ -112,11 +118,13 @@ export function CampaignModal({
                 {campaign.goal !== undefined && (
                   <>
                     <p className="mt-1 text-sm text-navy/70">
-                      <strong className="text-navy">{brl(campaign.raised ?? 0)}</strong> arrecadados de{" "}
-                      {brl(campaign.goal)}
+                      <strong className="text-navy">
+                        {Math.min(100, Math.round(((campaign.raised ?? 0) / campaign.goal) * 100))}%
+                      </strong>{" "}
+                      arrecadados de {brl(campaign.goal)}
                     </p>
                     <p className="mt-1 text-[10px] leading-tight text-red-600">
-                      *Valores arrecadados atualizados a cada 24h
+                      *Porcentagens atualizadas a cada 24h
                     </p>
                   </>
                 )}
@@ -131,7 +139,7 @@ export function CampaignModal({
               <div className="mt-4 sm:mt-5">
                 <div className="mx-auto w-fit rounded-2xl bg-white p-3 shadow-sm ring-1 ring-navy/10">
                   <QRCodeSVG
-                    value={PIX_CODE}
+                    value={code}
                     size={180}
                     fgColor="#12294a"
                     level="M"

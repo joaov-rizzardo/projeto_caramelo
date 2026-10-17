@@ -95,11 +95,10 @@ export function CampaignsSection({ campaigns }: { campaigns: Campaign[] }) {
                         <div className="h-full rounded-full bg-caramel" style={{ width: `${pct}%` }} />
                       </div>
                       <p className="mt-2 text-xs text-navy/70">
-                        <strong className="text-sm text-navy">{brl(c.raised)}</strong> arrecadados de{" "}
-                        {brl(c.goal)}
+                        <strong className="text-sm text-navy">{pct}%</strong> arrecadados de {brl(c.goal)}
                       </p>
                       <p className="mt-3 whitespace-nowrap text-[9px] leading-tight tracking-tight text-red-600 min-[360px]:text-[10px] min-[360px]:tracking-normal sm:whitespace-normal">
-                        *Valores arrecadados atualizados a cada 24h
+                        *Porcentagens atualizadas a cada 24h
                       </p>
 
                       <button
@@ -108,7 +107,7 @@ export function CampaignsSection({ campaigns }: { campaigns: Campaign[] }) {
                         className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-caramel px-4 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-caramel-600 active:scale-95"
                       >
                         <QrCode className="h-5 w-5" aria-hidden />
-                        Apoie com QR Code
+                        Doe com QR Code
                       </button>
                     </div>
                   </article>
